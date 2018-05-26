@@ -39,16 +39,18 @@
             this.backupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.bpListView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.blueprintFileContext = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.backupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.listView2 = new System.Windows.Forms.ListView();
+            this.histroyListView = new System.Windows.Forms.ListView();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.historyContext = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.restoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button1 = new System.Windows.Forms.Button();
             this.backupInput = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -72,6 +74,7 @@
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             this.blueprintFileContext.SuspendLayout();
+            this.historyContext.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.notifyIconContext.SuspendLayout();
             this.SuspendLayout();
@@ -170,35 +173,35 @@
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.listView1);
+            this.splitContainer2.Panel1.Controls.Add(this.bpListView);
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.listView2);
+            this.splitContainer2.Panel2.Controls.Add(this.histroyListView);
             this.splitContainer2.Size = new System.Drawing.Size(618, 335);
             this.splitContainer2.SplitterDistance = 167;
             this.splitContainer2.TabIndex = 1;
             // 
-            // listView1
+            // bpListView
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.bpListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3});
-            this.listView1.ContextMenuStrip = this.blueprintFileContext;
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.FullRowSelect = true;
-            this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(0, 0);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(618, 167);
-            this.listView1.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
-            this.listView1.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
+            this.bpListView.ContextMenuStrip = this.blueprintFileContext;
+            this.bpListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bpListView.FullRowSelect = true;
+            this.bpListView.GridLines = true;
+            this.bpListView.Location = new System.Drawing.Point(0, 0);
+            this.bpListView.Name = "bpListView";
+            this.bpListView.Size = new System.Drawing.Size(618, 167);
+            this.bpListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.bpListView.TabIndex = 0;
+            this.bpListView.UseCompatibleStateImageBehavior = false;
+            this.bpListView.View = System.Windows.Forms.View.Details;
+            this.bpListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
+            this.bpListView.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+            this.bpListView.DoubleClick += new System.EventHandler(this.listView1_DoubleClick);
             // 
             // columnHeader1
             // 
@@ -228,23 +231,24 @@
             this.backupToolStripMenuItem1.Text = "Backup";
             this.backupToolStripMenuItem1.Click += new System.EventHandler(this.backupToolStripMenuItem1_Click);
             // 
-            // listView2
+            // histroyListView
             // 
-            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.histroyListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader4,
             this.columnHeader5,
             this.columnHeader6});
-            this.listView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView2.FullRowSelect = true;
-            this.listView2.GridLines = true;
-            this.listView2.Location = new System.Drawing.Point(0, 0);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(618, 164);
-            this.listView2.Sorting = System.Windows.Forms.SortOrder.Ascending;
-            this.listView2.TabIndex = 0;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.Details;
-            this.listView2.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView2_ColumnClick);
+            this.histroyListView.ContextMenuStrip = this.historyContext;
+            this.histroyListView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.histroyListView.FullRowSelect = true;
+            this.histroyListView.GridLines = true;
+            this.histroyListView.Location = new System.Drawing.Point(0, 0);
+            this.histroyListView.Name = "histroyListView";
+            this.histroyListView.Size = new System.Drawing.Size(618, 164);
+            this.histroyListView.Sorting = System.Windows.Forms.SortOrder.Ascending;
+            this.histroyListView.TabIndex = 0;
+            this.histroyListView.UseCompatibleStateImageBehavior = false;
+            this.histroyListView.View = System.Windows.Forms.View.Details;
+            this.histroyListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView2_ColumnClick);
             // 
             // columnHeader4
             // 
@@ -259,6 +263,20 @@
             // 
             this.columnHeader6.Text = "Game Version";
             this.columnHeader6.Width = 106;
+            // 
+            // historyContext
+            // 
+            this.historyContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.restoreToolStripMenuItem});
+            this.historyContext.Name = "historyContext";
+            this.historyContext.Size = new System.Drawing.Size(111, 26);
+            // 
+            // restoreToolStripMenuItem
+            // 
+            this.restoreToolStripMenuItem.Name = "restoreToolStripMenuItem";
+            this.restoreToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.restoreToolStripMenuItem.Text = "restore";
+            this.restoreToolStripMenuItem.Click += new System.EventHandler(this.restoreToolStripMenuItem_Click);
             // 
             // button1
             // 
@@ -390,6 +408,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             this.blueprintFileContext.ResumeLayout(false);
+            this.historyContext.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.notifyIconContext.ResumeLayout(false);
@@ -405,7 +424,7 @@
         private System.Windows.Forms.Button stopButton;
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ListView bpListView;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox backupInput;
         private System.Windows.Forms.Label label1;
@@ -423,7 +442,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ListView histroyListView;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
@@ -431,6 +450,8 @@
         private System.Windows.Forms.ToolStripMenuItem backupToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip blueprintFileContext;
         private System.Windows.Forms.ToolStripMenuItem backupToolStripMenuItem1;
+        private System.Windows.Forms.ContextMenuStrip historyContext;
+        private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
     }
 }
 

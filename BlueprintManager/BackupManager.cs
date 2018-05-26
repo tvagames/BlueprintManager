@@ -17,6 +17,7 @@ namespace BlueprintManager
         public event FileSystemEventHandler FileCreated;
         public event FileSystemEventHandler FileDeleted;
         public event RenamedEventHandler FileRenamed;
+        public event EventHandler Backuped;
 
         internal void Start(string text1, string text2)
         {
@@ -113,11 +114,25 @@ namespace BlueprintManager
                     lock (queue)
                     {
                         queue.Remove(filePath);
+                        if (this.Backuped != null)
+                        {
+                            this.Backuped(this, new EventArgs());
+                        }
                     }
                 });
 
             }
 
+        }
+
+        public void RestoreFile(string filePath)
+        {
+            var backupFile = new FileInfo(filePath);
+            var blueprintName = backupFile.Directory.Name + ".blueprint";
+            var related = filePath.Substring(this.BackupPath.Length);
+            related = related.Substring(0, related.Length - backupFile.Name.Length - backupFile.Directory.Name.Length - 1);
+            var target = this.TargetPath + related + blueprintName;
+            File.Copy(filePath, target, true);
         }
 
         private Dictionary<string, string> queue = new Dictionary<string, string>();

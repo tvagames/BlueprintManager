@@ -23,6 +23,7 @@ namespace BlueprintManager
         public Form1()
         {
             InitializeComponent();
+            this.backupMgr.Backuped += BackupMgr_Backuped;
         }
 
         private void browseButton_Click(object sender, EventArgs e)
@@ -126,8 +127,8 @@ namespace BlueprintManager
             {
                 this.stopButton.PerformClick();
             }
-            this.listView1.ListViewItemSorter = this.list1Sort;
-            this.listView2.ListViewItemSorter = this.list2Sort;
+            this.bpListView.ListViewItemSorter = this.list1Sort;
+            this.histroyListView.ListViewItemSorter = this.list2Sort;
 
         }
 
@@ -139,13 +140,13 @@ namespace BlueprintManager
 
         private void ViewList(string path)
         {
-            this.listView1.BeginUpdate();
-            this.listView1.Clear();
-            this.listView1.Columns.Clear();
-            this.listView1.Columns.Add("Name").Width = 200;
-            this.listView1.Columns.Add("Version");
-            this.listView1.Columns.Add("Game Version");
-            this.listView1.Columns.Add("Last Update Date").Width = 150;
+            this.bpListView.BeginUpdate();
+            this.bpListView.Clear();
+            this.bpListView.Columns.Clear();
+            this.bpListView.Columns.Add("Name").Width = 200;
+            this.bpListView.Columns.Add("Version");
+            this.bpListView.Columns.Add("Game Version");
+            this.bpListView.Columns.Add("Last Update Date").Width = 150;
 
             var dir = new DirectoryInfo(path);
             foreach (var f in dir.GetFiles("*.blueprint"))
@@ -161,10 +162,10 @@ namespace BlueprintManager
                 {
                     Path = f.FullName,
                 };
-                this.listView1.Items.Add(item);
+                this.bpListView.Items.Add(item);
                 
             }
-            this.listView1.EndUpdate();
+            this.bpListView.EndUpdate();
         }
 
         class BlueprintItem
@@ -189,12 +190,17 @@ namespace BlueprintManager
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.listView1.SelectedIndices.Count == 0)
+            if (this.bpListView.SelectedIndices.Count == 0)
             {
                 return;
             }
 
-            var bpi = (BlueprintItem)this.listView1.SelectedItems[0].Tag;
+            var bpi = (BlueprintItem)this.bpListView.SelectedItems[0].Tag;
+            this.ViewHistory(bpi);
+        }
+
+        private void ViewHistory(BlueprintItem bpi)
+        {
             var related = bpi.Path.Substring(this.backupMgr.TargetPath.Length);
             var dirPath = related.Substring(0, related.Length - ".blueprint".Length);
             var bkDirPath = this.backupMgr.BackupPath + dirPath;
@@ -203,13 +209,13 @@ namespace BlueprintManager
             {
                 return;
             }
-            this.listView2.BeginUpdate();
-            this.listView2.Clear();
-            this.listView2.Columns.Clear();
-            this.listView2.Columns.Add("Name").Width = 200;
-            this.listView2.Columns.Add("Version");
-            this.listView2.Columns.Add("Game Version");
-            this.listView2.Columns.Add("Last Update Date").Width = 150;
+            this.histroyListView.BeginUpdate();
+            this.histroyListView.Clear();
+            this.histroyListView.Columns.Clear();
+            this.histroyListView.Columns.Add("Name").Width = 200;
+            this.histroyListView.Columns.Add("Version");
+            this.histroyListView.Columns.Add("Game Version");
+            this.histroyListView.Columns.Add("Last Update Date").Width = 150;
 
             foreach (var f in bkDir.GetFiles())
             {
@@ -227,9 +233,10 @@ namespace BlueprintManager
                 {
                     Path = f.FullName,
                 };
-                this.listView2.Items.Add(item);
+                this.histroyListView.Items.Add(item);
             }
-            this.listView2.EndUpdate();
+            this.histroyListView.EndUpdate();
+
         }
 
         private void backupToolStripMenuItem_Click(object sender, EventArgs e)
@@ -259,12 +266,12 @@ namespace BlueprintManager
 
         private void backupToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            if (this.listView1.SelectedIndices.Count == 0)
+            if (this.bpListView.SelectedIndices.Count == 0)
             {
                 return;
             }
 
-            var bpi = (BlueprintItem)this.listView1.SelectedItems[0].Tag;
+            var bpi = (BlueprintItem)this.bpListView.SelectedItems[0].Tag;
             this.backupMgr.BackupFile(bpi.Path);
             MessageBox.Show("Backup completed.", "info", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -272,22 +279,55 @@ namespace BlueprintManager
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             list1Sort.Column = e.Column;
-            this.listView1.Sort();
+            this.bpListView.Sort();
         }
 
         private void listView2_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             list1Sort.Column = e.Column;
-            this.listView2.Sort();
+            this.histroyListView.Sort();
         }
 
         private void listView1_DoubleClick(object sender, EventArgs e)
         {
-            var bpi = (BlueprintItem)this.listView1.SelectedItems[0].Tag;
+            var bpi = (BlueprintItem)this.bpListView.SelectedItems[0].Tag;
             var bp = BlueprintFile.Load(bpi.Path);
             var f = new Form2();
             f.Blueprint = bp;
             f.Show();
+        }
+
+        private void restoreToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // バックアップから元の場所へコピーする
+            if (this.histroyListView.SelectedIndices.Count == 0)
+            {
+                return;
+            }
+
+            BlueprintItem item = (BlueprintItem)this.histroyListView.SelectedItems[0].Tag;
+            this.backupMgr.RestoreFile(item.Path);
+            MessageBox.Show("restore completed.", "info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+
+        delegate void ViewHistoryDelegate();
+
+        private void BackupMgr_Backuped(object sender, EventArgs e)
+        {
+            this.Invoke(new ViewHistoryDelegate(ViewHistory));
+        }
+
+        private void ViewHistory()
+        {
+            if (this.bpListView.SelectedIndices.Count == 0)
+            {
+                return;
+            }
+
+            var bpi = (BlueprintItem)this.bpListView.SelectedItems[0].Tag;
+            this.ViewHistory(bpi);
         }
     }
 
