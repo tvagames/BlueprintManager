@@ -1,6 +1,9 @@
 # BlueprintManager
 From The Depthのblueprintファイル管理ツール。バックアップがメイン。
 
+## 配布場所
+https://github.com/tvagames/BlueprintManager/releases
+
 ## 使い方
 ### 初回
 1. バックアップフォルダをどこかに作っておく
