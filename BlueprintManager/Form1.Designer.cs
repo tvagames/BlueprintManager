@@ -64,6 +64,7 @@
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blockReplaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeContext.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -220,14 +221,15 @@
             // blueprintFileContext
             // 
             this.blueprintFileContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.backupToolStripMenuItem1});
+            this.backupToolStripMenuItem1,
+            this.blockReplaceToolStripMenuItem});
             this.blueprintFileContext.Name = "blueprintFileContext";
-            this.blueprintFileContext.Size = new System.Drawing.Size(114, 26);
+            this.blueprintFileContext.Size = new System.Drawing.Size(153, 70);
             // 
             // backupToolStripMenuItem1
             // 
             this.backupToolStripMenuItem1.Name = "backupToolStripMenuItem1";
-            this.backupToolStripMenuItem1.Size = new System.Drawing.Size(113, 22);
+            this.backupToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.backupToolStripMenuItem1.Text = "Backup";
             this.backupToolStripMenuItem1.Click += new System.EventHandler(this.backupToolStripMenuItem1_Click);
             // 
@@ -385,6 +387,13 @@
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // blockReplaceToolStripMenuItem
+            // 
+            this.blockReplaceToolStripMenuItem.Name = "blockReplaceToolStripMenuItem";
+            this.blockReplaceToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blockReplaceToolStripMenuItem.Text = "Block replace";
+            this.blockReplaceToolStripMenuItem.Click += new System.EventHandler(this.blockReplaceToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -452,6 +461,7 @@
         private System.Windows.Forms.ToolStripMenuItem backupToolStripMenuItem1;
         private System.Windows.Forms.ContextMenuStrip historyContext;
         private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blockReplaceToolStripMenuItem;
     }
 }
 

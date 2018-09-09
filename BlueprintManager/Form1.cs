@@ -147,25 +147,33 @@ namespace BlueprintManager
             this.bpListView.Columns.Add("Version");
             this.bpListView.Columns.Add("Game Version");
             this.bpListView.Columns.Add("Last Update Date").Width = 150;
+            this.bpListView.EndUpdate();
 
             var dir = new DirectoryInfo(path);
             foreach (var f in dir.GetFiles("*.blueprint"))
             {
-                var bp = BlueprintFile.Load(f.FullName);
-                var item = new ListViewItem(f.Name);
-                item.SubItems.Add("v" + bp.Version.ToString());
-                item.SubItems.Add(bp.Blueprint.GameVersion);
-                item.SubItems.Add(f.LastWriteTime.ToString("yyyy/MM/dd HH:mm:ss"));
-
-
-                item.Tag = new BlueprintItem()
+                Task.Factory.StartNew<ListViewItem>(() =>
                 {
-                    Path = f.FullName,
-                };
-                this.bpListView.Items.Add(item);
-                
+                    var bp = BlueprintFile.Load(f.FullName);
+                    var item = new ListViewItem(f.Name);
+                    item.SubItems.Add("v" + bp.Version.ToString());
+                    item.SubItems.Add(bp.Blueprint.GameVersion);
+                    item.SubItems.Add(f.LastWriteTime.ToString("yyyy/MM/dd HH:mm:ss"));
+
+
+                    item.Tag = new BlueprintItem()
+                    {
+                        Path = f.FullName,
+                    };
+                    return item;
+                }).ContinueWith(res => 
+                {
+                    this.bpListView.BeginUpdate();
+                    this.bpListView.Items.Add(res.Result);
+                    this.bpListView.EndUpdate();
+
+                }, TaskScheduler.FromCurrentSynchronizationContext());
             }
-            this.bpListView.EndUpdate();
         }
 
         class BlueprintItem
@@ -201,16 +209,17 @@ namespace BlueprintManager
 
         private void ViewHistory(BlueprintItem bpi)
         {
+            this.histroyListView.BeginUpdate();
+            this.histroyListView.Clear();
             var related = bpi.Path.Substring(this.backupMgr.TargetPath.Length);
             var dirPath = related.Substring(0, related.Length - ".blueprint".Length);
             var bkDirPath = this.backupMgr.BackupPath + dirPath;
             var bkDir = new DirectoryInfo(bkDirPath);
             if (!bkDir.Exists)
             {
+                this.histroyListView.EndUpdate();
                 return;
             }
-            this.histroyListView.BeginUpdate();
-            this.histroyListView.Clear();
             this.histroyListView.Columns.Clear();
             this.histroyListView.Columns.Add("Name").Width = 200;
             this.histroyListView.Columns.Add("Version");
@@ -234,6 +243,17 @@ namespace BlueprintManager
                     Path = f.FullName,
                 };
                 this.histroyListView.Items.Add(item);
+                //Task.Factory.StartNew<ListViewItem>(() =>
+                //{
+
+                //    return item;
+                //}).ContinueWith(res => 
+                //{
+                //    if (res.Result != null)
+                //    {
+                //    }
+                //}, TaskScheduler.FromCurrentSynchronizationContext());
+                
             }
             this.histroyListView.EndUpdate();
 
@@ -328,6 +348,25 @@ namespace BlueprintManager
 
             var bpi = (BlueprintItem)this.bpListView.SelectedItems[0].Tag;
             this.ViewHistory(bpi);
+        }
+
+        /// <summary>
+        /// ブロック置換
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void blockReplaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.bpListView.SelectedIndices.Count == 0)
+            {
+                return;
+            }
+
+            var bpi = (BlueprintItem)this.bpListView.SelectedItems[0].Tag;
+            var f = new FormBlockReplace();
+            var bp = BlueprintFile.Load(bpi.Path);
+            f.Blueprint = bp;
+            f.ShowDialog();
         }
     }
 
