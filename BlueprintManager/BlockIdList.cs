@@ -14,6 +14,11 @@ namespace BlueprintManager
         public int Length { get; set; }
         public string Name { get; set; }
         public string Uid { get; set; }
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 
     class BlockIdStore
@@ -37,15 +42,15 @@ namespace BlueprintManager
                     {
                         continue;
                     }
-                    if (string.IsNullOrWhiteSpace(factor[2]))
+                    if (string.IsNullOrWhiteSpace(factor[2].Trim('"')))
                     {
                         continue;
                     }
-                    if (string.IsNullOrWhiteSpace(factor[3]))
+                    if (string.IsNullOrWhiteSpace(factor[3].Trim('"')))
                     {
                         continue;
                     }
-                    if (string.IsNullOrWhiteSpace(factor[4]))
+                    if (string.IsNullOrWhiteSpace(factor[4].Trim('"')))
                     {
                         continue;
                     }

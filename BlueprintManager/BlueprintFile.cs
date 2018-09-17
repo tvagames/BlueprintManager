@@ -51,6 +51,8 @@ namespace BlueprintManager
         public float[] MinCord { get; set; }
         public List<Color> Colors {get; set;}
         public string Name { get; private set; }
+        public Dictionary<string, string> BlockIdToUidMap { get; private set; }
+        public Dictionary<string, string> UidToBlockIdMap { get; private set; }
 
         public BlueprintFile LoadBlocks()
         {
@@ -95,6 +97,19 @@ namespace BlueprintManager
                         block.rotation = (Rotation)rotations.Value<int>(i);
                         ret.Blocks.Add(block);
                     }
+
+                    var jobj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    var idMap = jobj["ItemDictionary"] as JObject;
+                    this.BlockIdToUidMap = new Dictionary<string, string>();
+                    this.UidToBlockIdMap = new Dictionary<string, string>();
+
+                    foreach (var item in idMap)
+                    {
+                        var blockId = item.Key;
+                        var uid = item.Value.Value<string>();
+                        this.BlockIdToUidMap.Add(blockId, uid);
+                        this.UidToBlockIdMap.Add(uid, blockId);
+                    }
                     return ret;
                 }
                 catch (Exception ex)
@@ -102,6 +117,53 @@ namespace BlueprintManager
                     Console.WriteLine(ex.ToString());
                     return null;
                 }
+            }
+        }
+
+        internal void ReplaceGroup(BlockCondition targetCondition, BlockAction action)
+        {
+            Newtonsoft.Json.Linq.JObject jobj = null;
+            try
+            {
+                var map = new Dictionary<string, string>();
+                if (action.Action != BlockAction.ActionType.None)
+                {
+                    if (targetCondition.Target == BlockCondition.TargetType.Group)
+                    {
+                        var fromList = targetCondition.Group;
+                        var toList = action.Group;
+                        for (int i = 0; i < fromList.Count; i++)
+                        {
+                            map.Add(fromList[i], toList[i]);
+                        }
+                    }
+                    else if (targetCondition.Target == BlockCondition.TargetType.Block)
+                    {
+                        map.Add(targetCondition.Block.Uid, action.Block.Uid);
+                    }
+                }
+
+                using (var sr = new System.IO.StreamReader(this.Path))
+                {
+                    var json = sr.ReadToEnd();
+                    var ret = this;
+                    jobj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    this.ReplaceBlock(jobj["Blueprint"], map, targetCondition, action);
+                }
+
+                if (jobj != null)
+                {
+                    using (var sw = new System.IO.StreamWriter(this.Path))
+                    {
+                        var json = jobj.ToString();
+                        sw.Write(json);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception("replace error", ex);
             }
         }
 
@@ -194,6 +256,495 @@ namespace BlueprintManager
             }   
 
         }
+
+
+        private void ReplaceBlock(JToken jobj,
+            Dictionary<string, string> replaceMap,
+            BlockCondition targetCondition, BlockAction action, bool isMain = true)
+        {
+            try
+            {
+
+                if ((isMain && targetCondition.IsMain) ||
+                    !isMain && targetCondition.IsSub)
+                {
+                    var newBlockIds = new List<int>();
+                    var blockIds = jobj["BlockIds"];
+
+                    var colorIds = jobj["BCI"];
+                    var newColorIds = new List<int>();
+
+                    for (int i = 0; i < blockIds.Count(); i++)
+                    {
+                        var blockInfo = this.Blocks[i];
+                        var blockId = blockIds.Value<int>(i);
+                        var uid = this.BlockIdToUidMap[blockId.ToString()];
+
+                        var isTarget = true;
+                        // position
+                        if (targetCondition.IsX && !IsHitPosition(blockInfo.x, targetCondition.XFrom, targetCondition.XTo, targetCondition.IsXInverted))
+                        {
+                            isTarget = false;
+                        }
+                        if (targetCondition.IsY && !IsHitPosition(blockInfo.y, targetCondition.YFrom, targetCondition.YTo, targetCondition.IsYInverted))
+                        {
+                            isTarget = false;
+                        }
+                        if (targetCondition.IsZ && !IsHitPosition(blockInfo.z, targetCondition.ZFrom, targetCondition.ZTo, targetCondition.IsZInverted))
+                        {
+                            isTarget = false;
+                        }
+
+                        // color
+                        if (targetCondition.IsColor && blockInfo.colorIndex != targetCondition.ColorNumber)
+                        {
+                            isTarget = false;
+                        }
+
+                        if (replaceMap.Any() && !replaceMap.ContainsKey(uid))
+                        {
+                            isTarget = false;
+                        }
+
+                        // color
+                        if (isTarget && action.IsColor)
+                        {
+                            newColorIds.Add(action.ColorNumber);
+                        }
+                        else
+                        {
+                            newColorIds.Add(blockInfo.colorIndex);
+                        }
+
+                        // block id
+                        if (isTarget && replaceMap.ContainsKey(uid))
+                        {
+                            var toUid = replaceMap[uid];
+                            var toBlockId = Convert.ToInt32(this.UidToBlockIdMap[toUid]);
+                            newBlockIds.Add(toBlockId);
+                        }
+                        else
+                        {
+                            newBlockIds.Add(blockId);
+                        }
+                    }
+                    jobj["BlockIds"] = new JArray(newBlockIds.ToArray());
+                    jobj["BCI"] = new JArray(newColorIds.ToArray());
+                }
+
+                if (targetCondition.IsSub)
+                {
+                    var subconstructs = jobj["SCs"];
+                    if (subconstructs != null)
+                    {
+                        for (int i = 0; i < subconstructs.Count(); i++)
+                        {
+                            var subconstruct = subconstructs.ElementAt(i);
+                            this.ReplaceBlock(subconstruct, replaceMap, targetCondition, action, false);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("replace error", ex);
+            }
+
+        }
+
+        private bool IsHitPosition(float value, Nullable<int> from, Nullable<int> to, bool inverted)
+        {
+            if (from.HasValue && to.HasValue)
+            {
+                if (!inverted && (from.Value > value || to.Value < value))
+                {
+                    return false;
+                }
+                if (inverted && (from.Value < value && to.Value > value))
+                {
+                    return false;
+                }
+            }
+            else if (from.HasValue)
+            {
+                if (!inverted && from.Value > value)
+                {
+                    return false;
+                }
+                if (inverted && from.Value < value)
+                {
+                    return false;
+                }
+            }
+            else if (to.HasValue)
+            {
+                if (!inverted && to.Value < value)
+                {
+                    return false;
+                }
+                if (inverted && to.Value > value)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private Color GetColor(BlockIdItem block, BlockInfo item, BlockCondition targetCondition)
+        {
+            if (this.IsHitBlock(block, item, targetCondition))
+            {
+                return Color.FromArgb(255, 255, 0, 0);
+            }
+            else
+            {
+                return Color.FromArgb(32, 218, 218, 218);
+            }
+
+        }
+
+        private Bitmap bmp;
+
+        public Bitmap GetBmp(Dictionary<string, BlockIdItem> items, BlockCondition targetCondition)
+        {
+            var orderedList = this.Blocks.OrderBy(item => item.y);
+            float zoom = 3;
+            float offsetX = this.MinCord[2] * -1;
+            float offsetY = this.MaxCord[1] * 1;
+            offsetX += 10;
+            offsetY += 10;
+            Color color = Color.FromArgb(64, 128, 128, 128);
+            this.bmp = new Bitmap(1000, 1000); ;
+
+            Graphics g = Graphics.FromImage(this.bmp);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            foreach (var item in orderedList)
+            {
+                if (!this.BlockIdToUidMap.ContainsKey(item.id.ToString()))
+                {
+                    continue;
+                }
+                var uid = this.BlockIdToUidMap[item.id.ToString()];
+                if (!items.ContainsKey(uid))
+                {
+                    continue;
+                }
+                var block = items[uid];
+                if (block.Name.Contains(""))
+                {
+
+                }
+
+                color = this.GetColor(block, item, targetCondition);
+
+                Direction d = Direction.Other;
+                int len = block.Length;
+                if (item.IsForward())
+                {
+                    d = Direction.Right;
+                }
+                else if (item.IsBack())
+                {
+                    d = Direction.Left;
+                }
+                else if (item.IsRight())
+                {
+                    d = Direction.Bottom;
+                }
+                else if (item.IsLeft())
+                {
+                    d = Direction.Top;
+                }
+                else if (item.IsUp())
+                {
+                    d = Direction.Right;
+                    len = block.Width;
+                }
+                else if (item.IsDown())
+                {
+                    d = Direction.Right;
+                    len = block.Width;
+                }
+
+                this.DrawBeam(zoom, offsetX, offsetY, g, item, item.z, item.x, len, d, color);
+            }
+            offsetY += 50;
+            offsetY += this.MinCord[1] * -1;
+            offsetY += this.MaxCord[0] * 1;
+
+            foreach (var item in this.Blocks.OrderBy(item => item.x))
+            {
+                if (!this.BlockIdToUidMap.ContainsKey(item.id.ToString()))
+                {
+                    continue;
+                }
+                var uid = this.BlockIdToUidMap[item.id.ToString()];
+                if (!items.ContainsKey(uid))
+                {
+                    continue;
+                }
+                var block = items[uid];
+
+                color = this.GetColor(block, item, targetCondition);
+
+                Direction d = Direction.Other;
+                int len = block.Length;
+
+                if (item.IsForward())
+                {
+                    d = Direction.Right;
+                }
+                else if (item.IsBack())
+                {
+                    d = Direction.Left;
+                }
+                else if (item.IsRight())
+                {
+                    d = Direction.Right;
+                    len = block.Width;
+                }
+                else if (item.IsLeft())
+                {
+                    d = Direction.Right;
+                    len = block.Width;
+                }
+                else if (item.IsDown())
+                {
+                    d = Direction.Bottom;
+                }
+                else if (item.IsUp())
+                {
+                    d = Direction.Top;
+                }
+
+                this.DrawBeam(zoom, offsetX, offsetY, g, item, item.z, item.y * -1, len, d, color);
+            }
+
+
+            offsetX += 50;
+            offsetX += this.MinCord[0] * -1;
+            offsetX += this.MaxCord[2] * 1;
+
+            foreach (var item in this.Blocks.OrderBy(item => item.z))
+            {
+                if (!this.BlockIdToUidMap.ContainsKey(item.id.ToString()))
+                {
+                    continue;
+                }
+                var uid = this.BlockIdToUidMap[item.id.ToString()];
+                if (!items.ContainsKey(uid))
+                {
+                    continue;
+                }
+                var block = items[uid];
+
+                color = this.GetColor(block, item, targetCondition);
+
+                Direction d = Direction.Other;
+                int len = block.Length;
+
+                if (item.IsForward())
+                {
+                    d = Direction.Right;
+                    len = block.Width;
+                }
+                else if (item.IsBack())
+                {
+                    d = Direction.Right;
+                    len = block.Width;
+                }
+                else if (item.IsRight())
+                {
+                    d = Direction.Left;
+                }
+                else if (item.IsLeft())
+                {
+                    d = Direction.Right;
+                }
+                else if (item.IsDown())
+                {
+                    d = Direction.Bottom;
+                }
+                else if (item.IsUp())
+                {
+                    d = Direction.Top;
+                }
+
+                this.DrawBeam(zoom, offsetX, offsetY, g, item, item.x, item.y * -1, len, d, color);
+            }
+
+            return this.bmp;
+        }
+
+        private bool IsHitBlock(BlockIdItem block, BlockInfo item, BlockCondition targetCondition)
+        {
+            if (targetCondition.Target == BlockCondition.TargetType.Block)
+            {
+                if (targetCondition.Block.Uid != this.BlockIdToUidMap[item.id.ToString()])
+                {
+                    return false;
+                }
+            }
+            else if (targetCondition.Target == BlockCondition.TargetType.Group)
+            {
+                if (!targetCondition.Group.Contains(this.BlockIdToUidMap[item.id.ToString()]))
+                {
+                    return false;
+                }
+            }
+
+            if (targetCondition.IsColor)
+            {
+                if (targetCondition.ColorNumber != item.colorIndex)
+                {
+                    return false;
+                }
+            }
+
+            // position
+            if (targetCondition.IsX && !IsHitPosition(item.x, targetCondition.XFrom, targetCondition.XTo, targetCondition.IsXInverted))
+            {
+                return false;
+            }
+            if (targetCondition.IsY && !IsHitPosition(item.y, targetCondition.YFrom, targetCondition.YTo, targetCondition.IsYInverted))
+            {
+                return false;
+            }
+            if (targetCondition.IsZ && !IsHitPosition(item.z, targetCondition.ZFrom, targetCondition.ZTo, targetCondition.IsZInverted))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private void DrawSrope(float zoom, float offsetX, float offsetY, Graphics g, BlockInfo item, float x, float y, int srope, Direction direct, Direction top)
+        {
+            if (direct == Direction.Right)
+            {
+                if (top == Direction.Bottom)
+                {
+                    g.FillPolygon(new SolidBrush(this.Colors[item.colorIndex]), new PointF[]
+                    {
+                            new PointF((x + offsetX) * zoom, (y + offsetY) * zoom),
+                            new PointF((x + offsetX + srope) * zoom, (y + offsetY) * zoom),
+                            new PointF((x + offsetX) * zoom, (y + offsetY + 1) * zoom),
+                    });
+                }
+                else if (top == Direction.Top)
+                {
+                    g.FillPolygon(new SolidBrush(this.Colors[item.colorIndex]), new PointF[]
+                    {
+                            new PointF((x + offsetX) * zoom, (y + offsetY) * zoom),
+                            new PointF((x + offsetX + srope) * zoom, (y + offsetY + 1) * zoom),
+                            new PointF((x + offsetX) * zoom, (y + offsetY + 1) * zoom),
+                    });
+                }
+            }
+            else if (direct == Direction.Left)
+            {
+                if (top == Direction.Bottom)
+                {
+                    g.FillPolygon(new SolidBrush(this.Colors[item.colorIndex]), new PointF[]
+                    {
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY) * zoom),
+                            new PointF((x + offsetX+1 - srope) * zoom, (y + offsetY) * zoom),
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY + 1) * zoom),
+                    });
+                }
+                else if (top == Direction.Top)
+                {
+                    g.FillPolygon(new SolidBrush(this.Colors[item.colorIndex]), new PointF[]
+                    {
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY) * zoom),
+                            new PointF((x + offsetX+1 - srope) * zoom, (y + offsetY + 1) * zoom),
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY + 1) * zoom),
+                    });
+                }
+            }
+            else if (direct == Direction.Top)
+            {
+                if (top == Direction.Right)
+                {
+                    g.FillPolygon(new SolidBrush(this.Colors[item.colorIndex]), new PointF[]
+                    {
+                            new PointF((x + offsetX) * zoom, (y + offsetY+1) * zoom),
+                            new PointF((x + offsetX) * zoom, (y + offsetY+1-srope) * zoom),
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY+1) * zoom),
+                    });
+                }
+                else if (top == Direction.Left)
+                {
+                    g.FillPolygon(new SolidBrush(this.Colors[item.colorIndex]), new PointF[]
+                    {
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY+1) * zoom),
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY+1-srope) * zoom),
+                            new PointF((x + offsetX) * zoom, (y + offsetY+1) * zoom),
+                    });
+                }
+            }
+            else if (direct == Direction.Bottom)
+            {
+                if (top == Direction.Right)
+                {
+                    g.FillPolygon(new SolidBrush(this.Colors[item.colorIndex]), new PointF[]
+                    {
+                            new PointF((x + offsetX) * zoom, (y + offsetY) * zoom),
+                            new PointF((x + offsetX) * zoom, (y + offsetY-srope) * zoom),
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY) * zoom),
+                    });
+                }
+                else if (top == Direction.Left)
+                {
+                    g.FillPolygon(new SolidBrush(this.Colors[item.colorIndex]), new PointF[]
+                    {
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY) * zoom),
+                            new PointF((x + offsetX+1) * zoom, (y + offsetY-srope) * zoom),
+                            new PointF((x + offsetX) * zoom, (y + offsetY) * zoom),
+                    });
+                }
+            }
+        }
+
+        private enum Direction
+        {
+            Top,
+            Left,
+            Right,
+            Bottom,
+            Other,
+        }
+
+
+        private void DrawBeam(float zoom, float offsetX, float offsetY, Graphics g, BlockInfo item, float x, float y, float beam, Direction direct, Color color)
+        {
+            if (direct == Direction.Right)
+            {
+                var r = new RectangleF((x + offsetX) * zoom, (y + offsetY) * zoom, zoom * beam, zoom);
+                g.FillRectangle(new SolidBrush(color), r);
+            }
+            else if (direct == Direction.Left)
+            {
+                var r = new RectangleF((x + offsetX - beam) * zoom, (y + offsetY) * zoom, zoom * beam, zoom);
+                g.FillRectangle(new SolidBrush(color), r);
+            }
+            else if (direct == Direction.Bottom)
+            {
+                var r = new RectangleF((x + offsetX) * zoom, (y + offsetY) * zoom, zoom * beam, zoom * beam);
+                g.FillRectangle(new SolidBrush(color), r);
+            }
+            else if (direct == Direction.Top)
+            {
+                var r = new RectangleF((x + offsetX - beam) * zoom, (y + offsetY) * zoom, zoom * beam, zoom * beam);
+                g.FillRectangle(new SolidBrush(color), r);
+            }
+            else
+            {
+                var r = new RectangleF((x + offsetX) * zoom, (y + offsetY) * zoom, zoom, zoom);
+                g.FillRectangle(new SolidBrush(color), r);
+            }
+        }
+
     }
 
     public class Blueprint
