@@ -368,6 +368,72 @@ namespace BlueprintManager
             f.Blueprint = bp;
             f.ShowDialog();
         }
+
+        /// <summary>
+        /// ブロック削除
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void blockEraseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.bpListView.SelectedIndices.Count == 0)
+            {
+                return;
+            }
+
+            var bpi = (BlueprintItem)this.bpListView.SelectedItems[0].Tag;
+            var f = new FormBlockErase();
+            var bp = BlueprintFile.Load(bpi.Path);
+            f.Blueprint = bp;
+            f.ShowDialog();
+        }
+
+        private void blockReplaceToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            blockReplaceToolStripMenuItem.PerformClick();
+        }
+
+        private void blockEraseToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            blockEraseToolStripMenuItem.PerformClick();
+        }
+
+        private void exitToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            exitToolStripMenuItem.PerformClick();
+        }
+
+        private void startToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            startToolStripMenuItem.PerformClick();
+        }
+
+        private void stopToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            stopToolStripMenuItem.PerformClick();
+        }
+
+        private void backupToolStripMenuItem3_Click(object sender, EventArgs e)
+        {
+            if (this.treeView1.Focused) {
+                backupToolStripMenuItem.PerformClick();
+            }
+            else if (this.bpListView.Focused)
+            {
+                backupToolStripMenuItem1.PerformClick();
+            }
+        }
+
+        private void restoreToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            restoreToolStripMenuItem.PerformClick();
+        }
+
+        private void defineEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var f = new FormDefineEditor();
+            f.ShowDialog();
+        }
     }
 
     public class ListViewItemComparer : IComparer

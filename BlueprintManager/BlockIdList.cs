@@ -7,13 +7,45 @@ using System.IO;
 
 namespace BlueprintManager
 {
+    public enum DefinitionsStatus
+    {
+        /// <summary>
+        /// 定義ファイルにあり名前がある
+        /// </summary>
+        Named,
+        /// <summary>
+        /// 定義ファイルにあるが名前が無い
+        /// </summary>
+        Unknown,
+        /// <summary>
+        /// 定義ファイルにない
+        /// </summary>
+        Undefined,
+    }
+
+    public enum CategorisedStatus
+    {
+        Categorised,
+        Uncategorised,
+    }
+
+    public enum GroupedStatus
+    {
+        Grouped,
+        NotGrouped,
+    }
+
+
     public class BlockIdItem
     {
+        public string Uid { get; set; }
+        public string Name { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public int Length { get; set; }
-        public string Name { get; set; }
-        public string Uid { get; set; }
+        public DefinitionsStatus Defined { get; set; }
+        public string Category { get; set; }
+        public GroupedStatus Grouped { get; set; }
 
         public override string ToString()
         {
@@ -42,32 +74,60 @@ namespace BlueprintManager
                     {
                         continue;
                     }
-                    if (string.IsNullOrWhiteSpace(factor[2].Trim('"')))
-                    {
-                        continue;
-                    }
-                    if (string.IsNullOrWhiteSpace(factor[3].Trim('"')))
-                    {
-                        continue;
-                    }
-                    if (string.IsNullOrWhiteSpace(factor[4].Trim('"')))
-                    {
-                        continue;
-                    }
 
                     var item = new BlockIdItem()
                     {
                         Uid = factor[0].Trim('"'),
                         Name = factor[1].Trim('"'),
-                        Width = Convert.ToInt32(factor[2].Trim('"')),
-                        Height = Convert.ToInt32(factor[3].Trim('"')),
-                        Length = Convert.ToInt32(factor[4].Trim('"')),
+                        Grouped = GroupedStatus.NotGrouped,
                     };
+
+                    int temp;
+                    if (int.TryParse(factor[2].Trim('"'), out temp))
+                    {
+                        item.Width = temp;
+                    }
+                    if (int.TryParse(factor[3].Trim('"'), out temp))
+                    {
+                        item.Height = temp;
+                    }
+                    if (int.TryParse(factor[4].Trim('"'), out temp))
+                    {
+                        item.Length = temp;
+                    }
+
+                    if (int.TryParse(item.Name, out temp))
+                    {
+                        // no name
+                        item.Defined = DefinitionsStatus.Unknown;
+                    }
+                    else
+                    {
+                        // named
+                        item.Defined = DefinitionsStatus.Named;
+                    }
 
                     ret.Add(item.Uid, item);
                 }
             }
             return ret;
+        }
+
+        public static void SaveIdList(Dictionary<string, BlockIdItem> list)
+        {
+            using (var sr = new StreamWriter("BlockIdList.csv"))
+            {
+                sr.WriteLine("\"UID\",\"name\", \"width\", \"height\", \"length\"");
+                foreach (var item in list.Values)
+                {
+                    sr.Write("\"" + item.Uid + "\"");
+                    sr.Write(",\"" + item.Name + "\"");
+                    sr.Write(",\"" + item.Width + "\"");
+                    sr.Write(",\"" + item.Height + "\"");
+                    sr.Write(",\"" + item.Length + "\"");
+                    sr.WriteLine("");
+                }
+            }
         }
 
         public static Dictionary<string, List<string>> LoadGroupMap()

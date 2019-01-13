@@ -59,6 +59,10 @@
     <Compile Include="BlockIdList.cs" />
     <Compile Include="BlockInfo.cs" />
     <Compile Include="BlueprintFile.cs" />
+    <Compile Include="BpmException.cs" />
+    <Compile Include="CategoryTree.cs" />
+    <Compile Include="CategoryTreeNode.cs" />
+    <Compile Include="ClipboardViewer.cs" />
     <Compile Include="ColorPalette.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Form1.cs">
@@ -73,11 +77,23 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormBloclErase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormBloclErase.Designer.cs">
+      <DependentUpon>FormBloclErase.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormBloclReplace.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBloclReplace.Designer.cs">
       <DependentUpon>FormBloclReplace.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormDefineEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDefineEditor.Designer.cs">
+      <DependentUpon>FormDefineEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,8 +103,14 @@
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormBloclErase.resx">
+      <DependentUpon>FormBloclErase.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormBloclReplace.resx">
       <DependentUpon>FormBloclReplace.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormDefineEditor.resx">
+      <DependentUpon>FormDefineEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -100,7 +122,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="BlockIdList.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="CategoryTree.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="GroupMap.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

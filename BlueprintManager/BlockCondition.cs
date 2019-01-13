@@ -12,11 +12,13 @@ namespace BlueprintManager
         {
             All,
             Group,
-            Block
+            Block,
+            Blocks
         }
         public TargetType Target { get; set; }
         public List<string> Group { get; set; }
         public BlockIdItem Block { get; set; }
+        public List<BlockIdItem> Blocks { get; set; } = new List<BlockIdItem>();
 
         public bool IsColor { get; set; }
         public int ColorNumber { get; set; }

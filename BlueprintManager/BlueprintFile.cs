@@ -107,17 +107,169 @@ namespace BlueprintManager
                     {
                         var blockId = item.Key;
                         var uid = item.Value.Value<string>();
+                        if (this.BlockIdToUidMap.ContainsKey(blockId)) {
+                            continue;
+                        }
+                        if (this.UidToBlockIdMap.ContainsKey(uid))
+                        {
+                            continue;
+                        }
                         this.BlockIdToUidMap.Add(blockId, uid);
                         this.UidToBlockIdMap.Add(uid, blockId);
                     }
                     return ret;
                 }
+                catch (BpmException ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    throw ex;
+                }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
-                    return null;
+                    throw new Exception("block loading is failed.", ex);
                 }
             }
+        }
+
+        internal void EraseBlocks(Dictionary<string, BlockIdItem> items, BlockCondition targetCondition)
+        {
+            Newtonsoft.Json.Linq.JObject jobj = null;
+            try
+            {
+
+                using (var sr = new System.IO.StreamReader(this.Path))
+                {
+                    var json = sr.ReadToEnd();
+                    var ret = this;
+                    jobj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    this.EraseBlocks(jobj["Blueprint"], items, targetCondition);
+                }
+
+                if (jobj != null)
+                {
+                    using (var sw = new System.IO.StreamWriter(this.Path))
+                    {
+                        var json = jobj.ToString();
+                        sw.Write(json);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception("erase error", ex);
+            }
+
+        }
+
+        private void EraseBlocks(JToken jobj, Dictionary<string, BlockIdItem> items, BlockCondition targetCondition, bool isMain = true)
+        {
+            try
+            {
+
+                if ((isMain && targetCondition.IsMain) ||
+                    !isMain && targetCondition.IsSub)
+                {
+
+                    var oldBlockIds = jobj["BlockIds"];
+                    var newBlockIds = new List<int>();
+                    // BLR, BCI
+                    var oldBlr = jobj["BLR"];
+                    var newBlr = new List<int>();
+                    var oldBci = jobj["BCI"];
+                    var newBci = new List<int>();
+                    // BLP, BP1, BP2
+                    var oldBlp = jobj["BLP"];
+                    var newBlp = new List<string>();
+                    var oldBp1 = jobj["BP1"];
+                    var newBp1 = new List<string>();
+                    var oldBp2 = jobj["BP2"];
+                    var newBp2 = new List<string>();
+
+                    // BEI
+                    var oldBei = jobj["BEI"];
+                    var newBei = new List<decimal>();
+                    var beiIdMap = new Dictionary<int, List<decimal>>();
+                    var beiIndex = 0;
+                    if (oldBei.Count() > 0)
+                    {
+                        while (beiIndex < oldBei.Count())
+                        {
+                            var beiItem = oldBei.Value<decimal>(beiIndex);
+                            var beiParams = new List<decimal>();
+                            var beiNum = (int)oldBei.Value<decimal>(beiIndex + 1);
+                            for (int i = 0; i < beiNum; i++)
+                            {
+                                beiParams.Add(oldBei.Value<decimal>(beiIndex + 2 + i));
+                            }
+                            beiIdMap.Add((int)beiItem, beiParams);
+                            beiIndex += (1 + beiNum + 1);
+                        }
+                    }
+
+                    var newIndex = 0;
+                    for (int i = 0; i < oldBlockIds.Count(); i++)
+                    {
+                        var blockInfo = this.Blocks[i];
+                        var blockId = oldBlockIds.Value<int>(i);
+
+                        var uid = this.BlockIdToUidMap[blockId.ToString()];
+                        
+                        if (!IsHitBlock(items[uid], blockInfo, targetCondition))
+                        {
+                            newBlockIds.Add(blockId);
+                            newBlr.Add(oldBlr.Value<int>(i));
+                            newBci.Add(oldBci.Value<int>(i));
+                            newBlp.Add(oldBlp.Value<string>(i));
+                            newBp1.Add(oldBp1.Value<string>(i));
+                            newBp2.Add(oldBp2.Value<string>(i));
+
+                            if (beiIdMap.ContainsKey(i))
+                            {
+                                var bei = beiIdMap[i];
+                                newBei.Add(newIndex);
+                                newBei.Add(bei.Count);
+                                newBei.AddRange(bei);
+                            }
+                            newIndex++;
+                        }
+                        else
+                        {
+                            if (beiIdMap.ContainsKey(i))
+                            {
+                                beiIdMap.Remove(i);
+                            }
+                        }
+                    }
+                    jobj["BlockIds"] = new JArray(newBlockIds.ToArray());
+                    jobj["BLR"] = new JArray(newBlr.ToArray());
+                    jobj["BCI"] = new JArray(newBci.ToArray());
+                    jobj["BLP"] = new JArray(newBlp.ToArray());
+                    jobj["BP1"] = new JArray(newBp1.ToArray());
+                    jobj["BP2"] = new JArray(newBp2.ToArray());
+                    jobj["BEI"] = new JArray(newBei.ToArray());
+                }
+
+                if (targetCondition.IsSub)
+                {
+                    var subconstructs = jobj["SCs"];
+                    if (subconstructs != null)
+                    {
+                        for (int i = 0; i < subconstructs.Count(); i++)
+                        {
+                            var subconstruct = subconstructs.ElementAt(i);
+                            this.EraseBlocks(subconstruct, items, targetCondition, false);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("erase error", ex);
+            }
+
+
         }
 
         internal void ReplaceGroup(BlockCondition targetCondition, BlockAction action)
@@ -166,97 +318,6 @@ namespace BlueprintManager
                 throw new Exception("replace error", ex);
             }
         }
-
-        /// <summary>
-        /// グループ置換
-        /// </summary>
-        /// <param name="fromList"></param>
-        /// <param name="toList"></param>
-        internal void ReplaceGroup(Dictionary<string, string> replaceMap)
-        {
-            Newtonsoft.Json.Linq.JObject jobj = null;
-            try
-            {
-                using (var sr = new System.IO.StreamReader(this.Path))
-                {
-                    var json = sr.ReadToEnd();
-                    var ret = this;
-                    jobj = Newtonsoft.Json.Linq.JObject.Parse(json);
-                    var idMap = jobj["ItemDictionary"] as JObject;
-                    var blockIdToUidMap = new Dictionary<string, string>();
-                    var uidToBlockIdMap = new Dictionary<string, string>();
-
-                    foreach (var item in idMap)
-                    {
-                        var blockId = item.Key;
-                        var uid = item.Value.Value<string>();
-                        blockIdToUidMap.Add(blockId, uid);
-                        uidToBlockIdMap.Add(uid, blockId);
-                    }
-
-                    this.ReplaceBlock(jobj["Blueprint"], replaceMap, blockIdToUidMap, uidToBlockIdMap);
-
-                }
-
-                if (jobj != null)
-                {
-                    using (var sw = new System.IO.StreamWriter(this.Path))
-                    {
-                        var json = jobj.ToString();
-                        sw.Write(json);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                throw new Exception("replace error", ex);
-            }
-        }
-
-        private void ReplaceBlock(JToken jobj, 
-            Dictionary<string, string> replaceMap,
-            Dictionary<string, string> blockIdToUidMap,
-            Dictionary<string, string> uidToBlockIdMap)
-        {
-            try
-            {
-                var blockIds = jobj["BlockIds"];
-                var newBlockIds = new List<int>();
-                for (int i = 0; i < blockIds.Count(); i++)
-                {
-                    var blockId = blockIds.Value<int>(i);
-                    var uid = blockIdToUidMap[blockId.ToString()];
-                    if (replaceMap.ContainsKey(uid))
-                    {
-                        var toUid = replaceMap[uid];
-                        var toBlockId = Convert.ToInt32(uidToBlockIdMap[toUid]);
-                        newBlockIds.Add(toBlockId);
-                    }
-                    else
-                    {
-                        newBlockIds.Add(blockId);
-                    }
-                }
-                jobj["BlockIds"] = new JArray(newBlockIds.ToArray());
-
-                var subconstructs = jobj["SCs"];
-                if (subconstructs != null)
-                {
-                    for (int i = 0; i < subconstructs.Count(); i++)
-                    {
-                        var subconstruct = subconstructs.ElementAt(i);
-                        this.ReplaceBlock(subconstruct, replaceMap, blockIdToUidMap, uidToBlockIdMap);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("replace error", ex);
-            }   
-
-        }
-
 
         private void ReplaceBlock(JToken jobj,
             Dictionary<string, string> replaceMap,
@@ -592,6 +653,14 @@ namespace BlueprintManager
                     return false;
                 }
             }
+            else if (targetCondition.Target == BlockCondition.TargetType.Blocks )
+            {
+                if (!targetCondition.Blocks.Any(a => a.Uid == block.Uid))
+                {
+                    return false;
+                }
+            }
+
 
             if (targetCondition.IsColor)
             {
@@ -620,6 +689,19 @@ namespace BlueprintManager
 
         private void DrawSrope(float zoom, float offsetX, float offsetY, Graphics g, BlockInfo item, float x, float y, int srope, Direction direct, Direction top)
         {
+            if (x == 0)
+            {
+                x = 1;
+            }
+            if (y == 0)
+            {
+                y = 1;
+            }
+            if (srope == 0)
+            {
+                srope = 1;
+            }
+
             if (direct == Direction.Right)
             {
                 if (top == Direction.Bottom)
@@ -718,6 +800,20 @@ namespace BlueprintManager
 
         private void DrawBeam(float zoom, float offsetX, float offsetY, Graphics g, BlockInfo item, float x, float y, float beam, Direction direct, Color color)
         {
+            if (x == 0)
+            {
+                x = 1;
+            }
+            if (y == 0)
+            {
+                y = 1;
+            }
+            if (beam == 0)
+            {
+                beam = 1;
+            }
+
+
             if (direct == Direction.Right)
             {
                 var r = new RectangleF((x + offsetX) * zoom, (y + offsetY) * zoom, zoom * beam, zoom);

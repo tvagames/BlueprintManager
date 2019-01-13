@@ -61,6 +61,7 @@
             this.chkActionColorNumber = new System.Windows.Forms.CheckBox();
             this.chkActionColorPalette = new System.Windows.Forms.CheckBox();
             this.radActionBlok = new System.Windows.Forms.RadioButton();
+            this.radActionNone = new System.Windows.Forms.RadioButton();
             this.radActionGroup = new System.Windows.Forms.RadioButton();
             this.cmbActionColorNumbers = new System.Windows.Forms.ComboBox();
             this.cmbActionColorPalette = new System.Windows.Forms.ComboBox();
@@ -70,7 +71,6 @@
             this.label8 = new System.Windows.Forms.Label();
             this.lblActionColor = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.radActionNone = new System.Windows.Forms.RadioButton();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -78,9 +78,10 @@
             // 
             // btnGroupDo
             // 
-            this.btnGroupDo.Location = new System.Drawing.Point(306, 551);
+            this.btnGroupDo.Location = new System.Drawing.Point(357, 689);
+            this.btnGroupDo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnGroupDo.Name = "btnGroupDo";
-            this.btnGroupDo.Size = new System.Drawing.Size(75, 23);
+            this.btnGroupDo.Size = new System.Drawing.Size(87, 29);
             this.btnGroupDo.TabIndex = 0;
             this.btnGroupDo.Text = "replace";
             this.btnGroupDo.UseVisualStyleBackColor = true;
@@ -91,36 +92,38 @@
             this.cmbGroupTo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbGroupTo.Enabled = false;
             this.cmbGroupTo.FormattingEnabled = true;
-            this.cmbGroupTo.Location = new System.Drawing.Point(149, 51);
+            this.cmbGroupTo.Location = new System.Drawing.Point(174, 64);
+            this.cmbGroupTo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbGroupTo.Name = "cmbGroupTo";
-            this.cmbGroupTo.Size = new System.Drawing.Size(121, 20);
+            this.cmbGroupTo.Size = new System.Drawing.Size(140, 23);
             this.cmbGroupTo.TabIndex = 2;
             // 
             // cmbGroupFrom
             // 
             this.cmbGroupFrom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbGroupFrom.FormattingEnabled = true;
-            this.cmbGroupFrom.Location = new System.Drawing.Point(96, 43);
+            this.cmbGroupFrom.Location = new System.Drawing.Point(112, 54);
+            this.cmbGroupFrom.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbGroupFrom.Name = "cmbGroupFrom";
-            this.cmbGroupFrom.Size = new System.Drawing.Size(123, 20);
+            this.cmbGroupFrom.Size = new System.Drawing.Size(143, 23);
             this.cmbGroupFrom.TabIndex = 2;
             this.cmbGroupFrom.SelectedIndexChanged += new System.EventHandler(this.cmbGroupFrom_SelectedIndexChanged);
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 23);
+            this.label3.Location = new System.Drawing.Point(21, 29);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(32, 12);
+            this.label3.Size = new System.Drawing.Size(40, 15);
             this.label3.TabIndex = 1;
             this.label3.Text = "name";
             // 
             // lblName
             // 
             this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(56, 23);
+            this.lblName.Location = new System.Drawing.Point(65, 29);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(11, 12);
+            this.lblName.Size = new System.Drawing.Size(12, 15);
             this.lblName.TabIndex = 1;
             this.lblName.Text = "-";
             // 
@@ -150,9 +153,11 @@
             this.groupBox2.Controls.Add(this.cmbColor);
             this.groupBox2.Controls.Add(this.cmbBlockFrom);
             this.groupBox2.Controls.Add(this.cmbGroupFrom);
-            this.groupBox2.Location = new System.Drawing.Point(12, 50);
+            this.groupBox2.Location = new System.Drawing.Point(14, 62);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(369, 222);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox2.Size = new System.Drawing.Size(430, 278);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "target";
@@ -163,81 +168,88 @@
             this.chkObjects.Items.AddRange(new object[] {
             "main object",
             "sub object"});
-            this.chkObjects.Location = new System.Drawing.Point(237, 18);
+            this.chkObjects.Location = new System.Drawing.Point(276, 22);
+            this.chkObjects.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkObjects.Name = "chkObjects";
-            this.chkObjects.Size = new System.Drawing.Size(120, 102);
+            this.chkObjects.Size = new System.Drawing.Size(139, 112);
             this.chkObjects.TabIndex = 7;
             this.chkObjects.SelectedIndexChanged += new System.EventHandler(this.chkObjects_SelectedIndexChanged);
             // 
             // txtZTo
             // 
             this.txtZTo.Enabled = false;
-            this.txtZTo.Location = new System.Drawing.Point(203, 191);
+            this.txtZTo.Location = new System.Drawing.Point(237, 239);
+            this.txtZTo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtZTo.Name = "txtZTo";
-            this.txtZTo.Size = new System.Drawing.Size(59, 19);
+            this.txtZTo.Size = new System.Drawing.Size(68, 23);
             this.txtZTo.TabIndex = 18;
             this.txtZTo.TextChanged += new System.EventHandler(this.txtZTo_TextChanged);
             // 
             // txtYTo
             // 
             this.txtYTo.Enabled = false;
-            this.txtYTo.Location = new System.Drawing.Point(203, 169);
+            this.txtYTo.Location = new System.Drawing.Point(237, 211);
+            this.txtYTo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtYTo.Name = "txtYTo";
-            this.txtYTo.Size = new System.Drawing.Size(59, 19);
+            this.txtYTo.Size = new System.Drawing.Size(68, 23);
             this.txtYTo.TabIndex = 14;
             this.txtYTo.TextChanged += new System.EventHandler(this.txtYTo_TextChanged);
             // 
             // txtXTo
             // 
             this.txtXTo.Enabled = false;
-            this.txtXTo.Location = new System.Drawing.Point(203, 147);
+            this.txtXTo.Location = new System.Drawing.Point(237, 184);
+            this.txtXTo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtXTo.Name = "txtXTo";
-            this.txtXTo.Size = new System.Drawing.Size(59, 19);
+            this.txtXTo.Size = new System.Drawing.Size(68, 23);
             this.txtXTo.TabIndex = 10;
             this.txtXTo.TextChanged += new System.EventHandler(this.txtXTo_TextChanged);
             // 
             // txtZFrom
             // 
             this.txtZFrom.Enabled = false;
-            this.txtZFrom.Location = new System.Drawing.Point(121, 191);
+            this.txtZFrom.Location = new System.Drawing.Point(141, 239);
+            this.txtZFrom.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtZFrom.Name = "txtZFrom";
-            this.txtZFrom.Size = new System.Drawing.Size(59, 19);
+            this.txtZFrom.Size = new System.Drawing.Size(68, 23);
             this.txtZFrom.TabIndex = 17;
             this.txtZFrom.TextChanged += new System.EventHandler(this.txtZFrom_TextChanged);
             // 
             // txtYFrom
             // 
             this.txtYFrom.Enabled = false;
-            this.txtYFrom.Location = new System.Drawing.Point(121, 169);
+            this.txtYFrom.Location = new System.Drawing.Point(141, 211);
+            this.txtYFrom.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtYFrom.Name = "txtYFrom";
-            this.txtYFrom.Size = new System.Drawing.Size(59, 19);
+            this.txtYFrom.Size = new System.Drawing.Size(68, 23);
             this.txtYFrom.TabIndex = 13;
             this.txtYFrom.TextChanged += new System.EventHandler(this.txtYFrom_TextChanged);
             // 
             // txtXFrom
             // 
             this.txtXFrom.Enabled = false;
-            this.txtXFrom.Location = new System.Drawing.Point(121, 147);
+            this.txtXFrom.Location = new System.Drawing.Point(141, 184);
+            this.txtXFrom.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtXFrom.Name = "txtXFrom";
-            this.txtXFrom.Size = new System.Drawing.Size(59, 19);
+            this.txtXFrom.Size = new System.Drawing.Size(68, 23);
             this.txtXFrom.TabIndex = 9;
             this.txtXFrom.TextChanged += new System.EventHandler(this.txtXFrom_TextChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(186, 194);
+            this.label5.Location = new System.Drawing.Point(217, 242);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(11, 12);
+            this.label5.Size = new System.Drawing.Size(12, 15);
             this.label5.TabIndex = 1;
             this.label5.Text = "-";
             // 
             // lblTargetColor
             // 
             this.lblTargetColor.BackColor = System.Drawing.Color.Red;
-            this.lblTargetColor.Location = new System.Drawing.Point(186, 94);
+            this.lblTargetColor.Location = new System.Drawing.Point(217, 118);
             this.lblTargetColor.Name = "lblTargetColor";
-            this.lblTargetColor.Size = new System.Drawing.Size(33, 17);
+            this.lblTargetColor.Size = new System.Drawing.Size(38, 21);
             this.lblTargetColor.TabIndex = 1;
             this.lblTargetColor.Text = "2";
             this.lblTargetColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -245,18 +257,18 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(186, 151);
+            this.label2.Location = new System.Drawing.Point(217, 189);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(11, 12);
+            this.label2.Size = new System.Drawing.Size(12, 15);
             this.label2.TabIndex = 1;
             this.label2.Text = "-";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(186, 172);
+            this.label4.Location = new System.Drawing.Point(217, 215);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(11, 12);
+            this.label4.Size = new System.Drawing.Size(12, 15);
             this.label4.TabIndex = 1;
             this.label4.Text = "-";
             // 
@@ -264,9 +276,10 @@
             // 
             this.chkZinv.AutoSize = true;
             this.chkZinv.Enabled = false;
-            this.chkZinv.Location = new System.Drawing.Point(268, 194);
+            this.chkZinv.Location = new System.Drawing.Point(313, 242);
+            this.chkZinv.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkZinv.Name = "chkZinv";
-            this.chkZinv.Size = new System.Drawing.Size(65, 16);
+            this.chkZinv.Size = new System.Drawing.Size(74, 19);
             this.chkZinv.TabIndex = 19;
             this.chkZinv.Text = "inverted";
             this.chkZinv.UseVisualStyleBackColor = true;
@@ -276,9 +289,10 @@
             // 
             this.chkYinv.AutoSize = true;
             this.chkYinv.Enabled = false;
-            this.chkYinv.Location = new System.Drawing.Point(268, 172);
+            this.chkYinv.Location = new System.Drawing.Point(313, 215);
+            this.chkYinv.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkYinv.Name = "chkYinv";
-            this.chkYinv.Size = new System.Drawing.Size(65, 16);
+            this.chkYinv.Size = new System.Drawing.Size(74, 19);
             this.chkYinv.TabIndex = 15;
             this.chkYinv.Text = "inverted";
             this.chkYinv.UseVisualStyleBackColor = true;
@@ -288,9 +302,10 @@
             // 
             this.chkXinv.AutoSize = true;
             this.chkXinv.Enabled = false;
-            this.chkXinv.Location = new System.Drawing.Point(268, 150);
+            this.chkXinv.Location = new System.Drawing.Point(313, 188);
+            this.chkXinv.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkXinv.Name = "chkXinv";
-            this.chkXinv.Size = new System.Drawing.Size(65, 16);
+            this.chkXinv.Size = new System.Drawing.Size(74, 19);
             this.chkXinv.TabIndex = 11;
             this.chkXinv.Text = "inverted";
             this.chkXinv.UseVisualStyleBackColor = true;
@@ -299,9 +314,10 @@
             // chkColor
             // 
             this.chkColor.AutoSize = true;
-            this.chkColor.Location = new System.Drawing.Point(15, 95);
+            this.chkColor.Location = new System.Drawing.Point(17, 119);
+            this.chkColor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkColor.Name = "chkColor";
-            this.chkColor.Size = new System.Drawing.Size(90, 16);
+            this.chkColor.Size = new System.Drawing.Size(103, 19);
             this.chkColor.TabIndex = 5;
             this.chkColor.Text = "color number";
             this.chkColor.UseVisualStyleBackColor = true;
@@ -310,9 +326,10 @@
             // chkZ
             // 
             this.chkZ.AutoSize = true;
-            this.chkZ.Location = new System.Drawing.Point(16, 193);
+            this.chkZ.Location = new System.Drawing.Point(19, 241);
+            this.chkZ.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkZ.Name = "chkZ";
-            this.chkZ.Size = new System.Drawing.Size(103, 16);
+            this.chkZ.Size = new System.Drawing.Size(114, 19);
             this.chkZ.TabIndex = 16;
             this.chkZ.Text = "z (front / back)";
             this.chkZ.UseVisualStyleBackColor = true;
@@ -321,9 +338,10 @@
             // chkY
             // 
             this.chkY.AutoSize = true;
-            this.chkY.Location = new System.Drawing.Point(16, 172);
+            this.chkY.Location = new System.Drawing.Point(19, 215);
+            this.chkY.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkY.Name = "chkY";
-            this.chkY.Size = new System.Drawing.Size(94, 16);
+            this.chkY.Size = new System.Drawing.Size(105, 19);
             this.chkY.TabIndex = 12;
             this.chkY.Text = "y (up / down)";
             this.chkY.UseVisualStyleBackColor = true;
@@ -332,9 +350,10 @@
             // chkX
             // 
             this.chkX.AutoSize = true;
-            this.chkX.Location = new System.Drawing.Point(16, 150);
+            this.chkX.Location = new System.Drawing.Point(19, 188);
+            this.chkX.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkX.Name = "chkX";
-            this.chkX.Size = new System.Drawing.Size(96, 16);
+            this.chkX.Size = new System.Drawing.Size(106, 19);
             this.chkX.TabIndex = 8;
             this.chkX.Text = "x (right / left)";
             this.chkX.UseVisualStyleBackColor = true;
@@ -343,9 +362,10 @@
             // radBlock
             // 
             this.radBlock.AutoSize = true;
-            this.radBlock.Location = new System.Drawing.Point(16, 70);
+            this.radBlock.Location = new System.Drawing.Point(19, 88);
+            this.radBlock.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.radBlock.Name = "radBlock";
-            this.radBlock.Size = new System.Drawing.Size(50, 16);
+            this.radBlock.Size = new System.Drawing.Size(55, 19);
             this.radBlock.TabIndex = 3;
             this.radBlock.Text = "block";
             this.radBlock.UseVisualStyleBackColor = true;
@@ -354,9 +374,10 @@
             // radGroup
             // 
             this.radGroup.AutoSize = true;
-            this.radGroup.Location = new System.Drawing.Point(16, 44);
+            this.radGroup.Location = new System.Drawing.Point(19, 55);
+            this.radGroup.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.radGroup.Name = "radGroup";
-            this.radGroup.Size = new System.Drawing.Size(51, 16);
+            this.radGroup.Size = new System.Drawing.Size(58, 19);
             this.radGroup.TabIndex = 1;
             this.radGroup.Text = "group";
             this.radGroup.UseVisualStyleBackColor = true;
@@ -366,9 +387,10 @@
             // 
             this.radAll.AutoSize = true;
             this.radAll.Checked = true;
-            this.radAll.Location = new System.Drawing.Point(16, 18);
+            this.radAll.Location = new System.Drawing.Point(19, 22);
+            this.radAll.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.radAll.Name = "radAll";
-            this.radAll.Size = new System.Drawing.Size(72, 16);
+            this.radAll.Size = new System.Drawing.Size(78, 19);
             this.radAll.TabIndex = 0;
             this.radAll.TabStop = true;
             this.radAll.Text = "all blocks";
@@ -382,9 +404,10 @@
             this.cmbColor.FormattingEnabled = true;
             this.cmbColor.Items.AddRange(new object[] {
             "(all)"});
-            this.cmbColor.Location = new System.Drawing.Point(111, 93);
+            this.cmbColor.Location = new System.Drawing.Point(129, 116);
+            this.cmbColor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbColor.Name = "cmbColor";
-            this.cmbColor.Size = new System.Drawing.Size(68, 20);
+            this.cmbColor.Size = new System.Drawing.Size(79, 23);
             this.cmbColor.TabIndex = 6;
             this.cmbColor.SelectedIndexChanged += new System.EventHandler(this.cmbColor_SelectedIndexChanged);
             // 
@@ -392,9 +415,10 @@
             // 
             this.cmbBlockFrom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbBlockFrom.FormattingEnabled = true;
-            this.cmbBlockFrom.Location = new System.Drawing.Point(96, 69);
+            this.cmbBlockFrom.Location = new System.Drawing.Point(112, 86);
+            this.cmbBlockFrom.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbBlockFrom.Name = "cmbBlockFrom";
-            this.cmbBlockFrom.Size = new System.Drawing.Size(123, 20);
+            this.cmbBlockFrom.Size = new System.Drawing.Size(143, 23);
             this.cmbBlockFrom.TabIndex = 4;
             this.cmbBlockFrom.SelectedIndexChanged += new System.EventHandler(this.cmbBlockFrom_SelectedIndexChanged);
             // 
@@ -413,9 +437,11 @@
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.lblActionColor);
-            this.groupBox3.Location = new System.Drawing.Point(12, 278);
+            this.groupBox3.Location = new System.Drawing.Point(14, 348);
+            this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(369, 267);
+            this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox3.Size = new System.Drawing.Size(430, 334);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "action";
@@ -423,9 +449,10 @@
             // chkActionColorNumber
             // 
             this.chkActionColorNumber.AutoSize = true;
-            this.chkActionColorNumber.Location = new System.Drawing.Point(14, 231);
+            this.chkActionColorNumber.Location = new System.Drawing.Point(16, 289);
+            this.chkActionColorNumber.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkActionColorNumber.Name = "chkActionColorNumber";
-            this.chkActionColorNumber.Size = new System.Drawing.Size(130, 16);
+            this.chkActionColorNumber.Size = new System.Drawing.Size(148, 19);
             this.chkActionColorNumber.TabIndex = 7;
             this.chkActionColorNumber.Text = "change color number";
             this.chkActionColorNumber.UseVisualStyleBackColor = true;
@@ -434,9 +461,10 @@
             // chkActionColorPalette
             // 
             this.chkActionColorPalette.AutoSize = true;
-            this.chkActionColorPalette.Location = new System.Drawing.Point(16, 105);
+            this.chkActionColorPalette.Location = new System.Drawing.Point(19, 131);
+            this.chkActionColorPalette.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkActionColorPalette.Name = "chkActionColorPalette";
-            this.chkActionColorPalette.Size = new System.Drawing.Size(128, 16);
+            this.chkActionColorPalette.Size = new System.Drawing.Size(144, 19);
             this.chkActionColorPalette.TabIndex = 5;
             this.chkActionColorPalette.Text = "change color palette";
             this.chkActionColorPalette.UseVisualStyleBackColor = true;
@@ -446,21 +474,37 @@
             // 
             this.radActionBlok.AutoSize = true;
             this.radActionBlok.Enabled = false;
-            this.radActionBlok.Location = new System.Drawing.Point(16, 78);
+            this.radActionBlok.Location = new System.Drawing.Point(19, 98);
+            this.radActionBlok.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.radActionBlok.Name = "radActionBlok";
-            this.radActionBlok.Size = new System.Drawing.Size(91, 16);
+            this.radActionBlok.Size = new System.Drawing.Size(101, 19);
             this.radActionBlok.TabIndex = 3;
             this.radActionBlok.Text = "replace block";
             this.radActionBlok.UseVisualStyleBackColor = true;
             this.radActionBlok.CheckedChanged += new System.EventHandler(this.radActionBlok_CheckedChanged);
             // 
+            // radActionNone
+            // 
+            this.radActionNone.AutoSize = true;
+            this.radActionNone.Checked = true;
+            this.radActionNone.Location = new System.Drawing.Point(19, 38);
+            this.radActionNone.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.radActionNone.Name = "radActionNone";
+            this.radActionNone.Size = new System.Drawing.Size(85, 19);
+            this.radActionNone.TabIndex = 0;
+            this.radActionNone.TabStop = true;
+            this.radActionNone.Text = "no replace";
+            this.radActionNone.UseVisualStyleBackColor = true;
+            this.radActionNone.CheckedChanged += new System.EventHandler(this.radActionNone_CheckedChanged);
+            // 
             // radActionGroup
             // 
             this.radActionGroup.AutoSize = true;
             this.radActionGroup.Enabled = false;
-            this.radActionGroup.Location = new System.Drawing.Point(16, 52);
+            this.radActionGroup.Location = new System.Drawing.Point(19, 65);
+            this.radActionGroup.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.radActionGroup.Name = "radActionGroup";
-            this.radActionGroup.Size = new System.Drawing.Size(92, 16);
+            this.radActionGroup.Size = new System.Drawing.Size(104, 19);
             this.radActionGroup.TabIndex = 1;
             this.radActionGroup.Text = "replace group";
             this.radActionGroup.UseVisualStyleBackColor = true;
@@ -471,9 +515,10 @@
             this.cmbActionColorNumbers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbActionColorNumbers.Enabled = false;
             this.cmbActionColorNumbers.FormattingEnabled = true;
-            this.cmbActionColorNumbers.Location = new System.Drawing.Point(147, 229);
+            this.cmbActionColorNumbers.Location = new System.Drawing.Point(171, 286);
+            this.cmbActionColorNumbers.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbActionColorNumbers.Name = "cmbActionColorNumbers";
-            this.cmbActionColorNumbers.Size = new System.Drawing.Size(123, 20);
+            this.cmbActionColorNumbers.Size = new System.Drawing.Size(143, 23);
             this.cmbActionColorNumbers.TabIndex = 8;
             this.cmbActionColorNumbers.SelectedIndexChanged += new System.EventHandler(this.cmbActionColorNumbers_SelectedIndexChanged);
             // 
@@ -482,9 +527,10 @@
             this.cmbActionColorPalette.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbActionColorPalette.Enabled = false;
             this.cmbActionColorPalette.FormattingEnabled = true;
-            this.cmbActionColorPalette.Location = new System.Drawing.Point(149, 103);
+            this.cmbActionColorPalette.Location = new System.Drawing.Point(174, 129);
+            this.cmbActionColorPalette.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbActionColorPalette.Name = "cmbActionColorPalette";
-            this.cmbActionColorPalette.Size = new System.Drawing.Size(123, 20);
+            this.cmbActionColorPalette.Size = new System.Drawing.Size(143, 23);
             this.cmbActionColorPalette.TabIndex = 6;
             // 
             // cmbBlockTo
@@ -492,17 +538,18 @@
             this.cmbBlockTo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbBlockTo.Enabled = false;
             this.cmbBlockTo.FormattingEnabled = true;
-            this.cmbBlockTo.Location = new System.Drawing.Point(149, 77);
+            this.cmbBlockTo.Location = new System.Drawing.Point(174, 96);
+            this.cmbBlockTo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.cmbBlockTo.Name = "cmbBlockTo";
-            this.cmbBlockTo.Size = new System.Drawing.Size(123, 20);
+            this.cmbBlockTo.Size = new System.Drawing.Size(143, 23);
             this.cmbBlockTo.TabIndex = 4;
             // 
             // label10
             // 
             this.label10.BackColor = System.Drawing.Color.Red;
-            this.label10.Location = new System.Drawing.Point(94, 139);
+            this.label10.Location = new System.Drawing.Point(110, 174);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(33, 17);
+            this.label10.Size = new System.Drawing.Size(38, 21);
             this.label10.TabIndex = 1;
             this.label10.Text = "2";
             this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -510,9 +557,9 @@
             // label9
             // 
             this.label9.BackColor = System.Drawing.Color.Blue;
-            this.label9.Location = new System.Drawing.Point(55, 139);
+            this.label9.Location = new System.Drawing.Point(64, 174);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(33, 17);
+            this.label9.Size = new System.Drawing.Size(38, 21);
             this.label9.TabIndex = 1;
             this.label9.Text = "1";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -520,9 +567,9 @@
             // label8
             // 
             this.label8.BackColor = System.Drawing.Color.Transparent;
-            this.label8.Location = new System.Drawing.Point(16, 139);
+            this.label8.Location = new System.Drawing.Point(19, 174);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(33, 17);
+            this.label8.Size = new System.Drawing.Size(38, 21);
             this.label8.TabIndex = 1;
             this.label8.Text = "0";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -530,9 +577,9 @@
             // lblActionColor
             // 
             this.lblActionColor.BackColor = System.Drawing.Color.Red;
-            this.lblActionColor.Location = new System.Drawing.Point(276, 230);
+            this.lblActionColor.Location = new System.Drawing.Point(322, 288);
             this.lblActionColor.Name = "lblActionColor";
-            this.lblActionColor.Size = new System.Drawing.Size(33, 17);
+            this.lblActionColor.Size = new System.Drawing.Size(38, 21);
             this.lblActionColor.TabIndex = 1;
             this.lblActionColor.Text = "2";
             this.lblActionColor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -542,36 +589,26 @@
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(387, 50);
+            this.pictureBox1.Location = new System.Drawing.Point(451, 62);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(549, 542);
+            this.pictureBox1.Size = new System.Drawing.Size(640, 678);
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             // 
-            // radActionNone
-            // 
-            this.radActionNone.AutoSize = true;
-            this.radActionNone.Checked = true;
-            this.radActionNone.Location = new System.Drawing.Point(16, 30);
-            this.radActionNone.Name = "radActionNone";
-            this.radActionNone.Size = new System.Drawing.Size(76, 16);
-            this.radActionNone.TabIndex = 0;
-            this.radActionNone.TabStop = true;
-            this.radActionNone.Text = "no replace";
-            this.radActionNone.UseVisualStyleBackColor = true;
-            this.radActionNone.CheckedChanged += new System.EventHandler(this.radActionNone_CheckedChanged);
-            // 
             // FormBlockReplace
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(958, 629);
+            this.ClientSize = new System.Drawing.Size(1118, 786);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnGroupDo);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lblName);
+            this.Font = new System.Drawing.Font("Meiryo UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "FormBlockReplace";
             this.Text = "Block Replace";
             this.Load += new System.EventHandler(this.FormBlockReplace_Load);

@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace BlueprintManager
 {
-    public partial class FormBlockReplace : Form
+    public partial class FormBlockErase : Form
     {
-        public FormBlockReplace()
+        public FormBlockErase()
         {
             InitializeComponent();
         }
@@ -20,34 +20,35 @@ namespace BlueprintManager
         private BlockCondition TargetCondition { get; set; } = new BlockCondition();
         private BlockAction Action { get; set; } = new BlockAction();
         public Dictionary<string, BlockIdItem> BlockIdList { get; set; }
-        public Dictionary<string, List<string>> GroupMap { get; set; }
         public BlueprintFile Blueprint { get; set; }
+        internal CategoryTreeNode Tree { get; private set; }
 
-
-        private void FormBlockReplace_Load(object sender, EventArgs e)
+        private void FormBlockErase_Load(object sender, EventArgs e)
         {
             try
             {
+                this.Tree = CategoryTree.Load(CategoryTree.CATEGORY_TREE_FILE);
                 this.BlockIdList = BlockIdStore.LoadIdList();
-                this.GroupMap = BlockIdStore.LoadGroupMap();
                 this.Blueprint.LoadBlocks();
 
-                this.cmbGroupFrom.Items.Clear();
-                foreach (var key in this.GroupMap.Keys)
+                this.treeBlocks.Nodes.Clear();
+                this.AddTreeNode(this.Tree, null);
+
                 {
-                    this.cmbGroupFrom.Items.Add(key);
+                    var node = new TreeNode("unknown");
+                    var list = this.BlockIdList.Where(w => string.IsNullOrEmpty(w.Value.Category)).ToList();
+                    foreach (var item in list)
+                    {
+                        var block = this.BlockIdList[item.Key];
+                        node.Nodes.Add(block.Name).Tag = block;
+                    }
+                    this.treeBlocks.Nodes.Add(node);
                 }
 
-                this.cmbGroupTo.Items.Clear();
-                foreach (var key in this.GroupMap.Keys)
                 {
-                    this.cmbGroupTo.Items.Add(key);
+                    var node = new TreeNode("undefined");
+                    this.treeBlocks.Nodes.Add(node);
                 }
-                this.cmbGroupFrom.SelectedIndex = 0;
-                this.cmbGroupTo.SelectedIndex = 0;
-
-                this.cmbBlockFrom.DataSource = this.BlockIdList.Select(s => s.Value).ToList();
-                this.cmbBlockTo.DataSource = this.BlockIdList.Select(s => s.Value).ToList();
 
                 this.cmbColor.Items.Clear();
                 for (int i = 0; i < 32; i++)
@@ -55,14 +56,6 @@ namespace BlueprintManager
                     var index = this.cmbColor.Items.Add(i);
                 }
                 this.cmbColor.SelectedIndex = 0;
-
-
-                this.cmbActionColorNumbers.Items.Clear();
-                for (int i = 0; i < 32; i++)
-                {
-                    var index = this.cmbActionColorNumbers.Items.Add(i);
-                }
-                this.cmbActionColorNumbers.SelectedIndex = 0;
 
                 this.chkObjects.Items.Clear();
                 this.chkObjects.Items.Add("main object", true);
@@ -81,25 +74,43 @@ namespace BlueprintManager
             }
         }
 
-        private void btnGroupDo_Click(object sender, EventArgs e)
+        private void AddTreeNode(CategoryTreeNode parent, TreeNode parentNode)
+        {
+            foreach (var category in parent.SubCategories)
+            {
+                var node = new TreeNode(category.Name);
+                if (category.SubCategories != null)
+                {
+                    AddTreeNode(category, node);
+                }
+                if (category.Items != null)
+                {
+                    foreach (var uid in category.Items)
+                    {
+                        var block = this.BlockIdList[uid];
+                        block.Category = category.Name;
+                        node.Nodes.Add(block.Name).Tag = block;
+                    }
+                }
+                if (parentNode == null)
+                {
+                    this.treeBlocks.Nodes.Add(node);
+                }
+                else
+                {
+                    parentNode.Nodes.Add(node);
+                }
+            }
+        }
+
+        private void btnErase_Click(object sender, EventArgs e)
         {
             try
             {
-                var fromKey = this.cmbGroupFrom.Items[this.cmbGroupFrom.SelectedIndex] as string;
-                var toKey = this.cmbGroupTo.Items[this.cmbGroupTo.SelectedIndex] as string;
-
-                var fromList = this.GroupMap[fromKey];
-                var toList = this.GroupMap[toKey];
                 var map = new Dictionary<string, string>();
-                for (int i = 0; i < fromList.Count; i++)
-                {
-                    map.Add(fromList[i], toList[i]);
-                }
 
-                this.FillAction();
                 this.FillCondition();
-                //this.Blueprint.ReplaceGroup(map);
-                this.Blueprint.ReplaceGroup(this.TargetCondition, this.Action);
+                this.Blueprint.EraseBlocks(this.BlockIdList, this.TargetCondition);
                 this.Blueprint.LoadBlocks();
                 this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
 
@@ -113,22 +124,7 @@ namespace BlueprintManager
 
         private void FillCondition()
         {
-            if (this.radAll.Checked)
-            {
-                this.TargetCondition.Target = BlockCondition.TargetType.All;
-            }
-            else if (this.radGroup.Checked)
-            {
-                this.TargetCondition.Target = BlockCondition.TargetType.Group;
-            }
-            if (this.radBlock.Checked)
-            {
-                this.TargetCondition.Target = BlockCondition.TargetType.Block;
-            }
-
-            this.TargetCondition.Block = this.cmbBlockFrom.SelectedItem as BlockIdItem;
-            var fromKey = this.cmbGroupFrom.Items[this.cmbGroupFrom.SelectedIndex] as string;
-            this.TargetCondition.Group = this.GroupMap[fromKey];
+            this.TargetCondition.Target = BlockCondition.TargetType.Blocks;
 
             this.TargetCondition.IsColor = this.chkColor.Checked;
             this.TargetCondition.ColorNumber = this.cmbColor.SelectedIndex;
@@ -194,36 +190,26 @@ namespace BlueprintManager
             this.TargetCondition.IsMain = this.chkObjects.CheckedIndices.Contains(0);
             this.TargetCondition.IsSub = this.chkObjects.CheckedIndices.Contains(1);
 
+            this.TargetCondition.Blocks = this.GetTargetBlocks(this.treeBlocks.Nodes);
         }
 
-        private void FillAction()
+        private List<BlockIdItem> GetTargetBlocks(TreeNodeCollection nodes)
         {
-            if (this.radActionNone.Checked)
+            var targetBlocks = new List<BlockIdItem>();
+            foreach (TreeNode node in nodes)
             {
-                this.Action.Action = BlockAction.ActionType.None;
+                if (node.Checked && node.Tag != null)
+                {
+                    targetBlocks.Add((BlockIdItem)node.Tag);
+                }
+
+                if (node.Nodes.Count > 0)
+                {
+                    targetBlocks.AddRange(this.GetTargetBlocks(node.Nodes));
+                }
             }
-            else if (this.radActionGroup.Checked)
-            {
-                this.Action.Action = BlockAction.ActionType.Group;
-            }
-            if (this.radActionBlok.Checked)
-            {
-                this.Action.Action = BlockAction.ActionType.Block;
-            }
-
-            this.Action.Block = this.cmbBlockTo.SelectedItem as BlockIdItem;
-            var key = this.cmbGroupTo.Items[this.cmbGroupTo.SelectedIndex] as string;
-            this.Action.Group = this.GroupMap[key];
-
-            this.Action.IsColorPalette = this.chkActionColorPalette.Checked;
-            this.Action.ColorPalette = this.cmbActionColorPalette.SelectedItem as ColorPalette;
-
-            this.Action.IsColor = this.chkActionColorNumber.Checked;
-            this.Action.ColorNumber = this.cmbActionColorNumbers.SelectedIndex;
-
-
+            return targetBlocks;
         }
-
 
         private void cmbColor_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -233,65 +219,6 @@ namespace BlueprintManager
             this.FillCondition();
             this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
 
-        }
-
-        private void cmbActionColorNumbers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var i = this.cmbActionColorNumbers.SelectedIndex;
-            this.lblActionColor.BackColor = this.Blueprint.Colors[i];
-            this.lblActionColor.Text = i.ToString();
-
-        }
-
-        private void radAll_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radAll.Checked)
-            {
-                this.radActionNone.Enabled = true;
-                this.radActionGroup.Enabled = false;
-                this.radActionBlok.Enabled = false;
-            }
-            this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
-
-        }
-
-        private void radGroup_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radGroup.Checked)
-            {
-                this.radActionNone.Enabled = true;
-                this.radActionGroup.Enabled = true;
-                this.radActionBlok.Enabled = false;
-                this.radActionGroup.Checked = true;
-            }
-            this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
-
-        }
-
-        private void radBlock_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.radBlock.Checked)
-            {
-                this.radActionNone.Enabled = true;
-                this.radActionGroup.Enabled = false;
-                this.radActionBlok.Enabled = true;
-                this.radActionBlok.Checked = true;
-            }
-            this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
-
-        }
-
-        private void chkActionColorPalette_CheckedChanged(object sender, EventArgs e)
-        {
-            this.cmbActionColorPalette.Enabled = this.chkActionColorPalette.Checked;
-        }
-
-        private void chkActionColorNumber_CheckedChanged(object sender, EventArgs e)
-        {
-            this.cmbActionColorNumbers.Enabled = this.chkActionColorNumber.Checked;
         }
 
         private void chkColor_CheckedChanged(object sender, EventArgs e)
@@ -418,22 +345,98 @@ namespace BlueprintManager
 
         }
 
-        private void radActionGroup_CheckedChanged(object sender, EventArgs e)
+        private CheckState GetChildrenChecked(TreeNodeCollection nodes)
         {
-            this.cmbBlockTo.Enabled = false;
-            this.cmbGroupTo.Enabled = true;
+            bool? temp = null;
+            foreach (TreeNode child in nodes)
+            {
+                if (temp.HasValue && temp.Value != child.Checked)
+                {
+                    return CheckState.Indeterminate;
+                }
+                else
+                {
+                    temp = child.Checked;
+                }
+            }
+            if (temp.Value)
+            {
+                return CheckState.Checked;
+            }
+            else
+            {
+                return CheckState.Unchecked;
+            }
         }
 
-        private void radActionBlok_CheckedChanged(object sender, EventArgs e)
+        private void SetChildrenChecked(TreeNodeCollection nodes, bool isChecked)
         {
-            this.cmbBlockTo.Enabled = true;
-            this.cmbGroupTo.Enabled = false;
+            foreach (TreeNode child in nodes)
+            {
+                child.Checked = isChecked;
+                if (child.Nodes.Count > 0)
+                {
+                    SetChildrenChecked(child.Nodes, isChecked);
+                }
+            }
         }
 
-        private void radActionNone_CheckedChanged(object sender, EventArgs e)
+
+        private bool treeCheckLocked = false;
+
+        /// <summary>
+        /// ツリーのチェック変更後
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void treeBlocks_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            this.cmbBlockTo.Enabled = false;
-            this.cmbGroupTo.Enabled = false;
+            if (treeCheckLocked)
+            {
+                return;
+            }
+            treeCheckLocked = true;
+            if (e.Node.Nodes.Count > 0)
+            {
+                var childrenState = GetChildrenChecked(e.Node.Nodes);
+                // 親
+                if (e.Node.Checked && childrenState != CheckState.Checked)
+                {
+                    // off -> on
+                    this.SetChildrenChecked(e.Node.Nodes, true);
+                }
+                else if (!e.Node.Checked && childrenState == CheckState.Checked)
+                {
+                    // on -> off
+                    this.SetChildrenChecked(e.Node.Nodes, false);
+                }
+            }
+            else if (e.Node.Parent != null)
+            {
+                var p = e.Node.Parent;
+                while (p != null)
+                {
+                    var childrenState = GetChildrenChecked(p.Nodes);
+                    // 子
+                    if (e.Node.Checked && !p.Checked && childrenState == CheckState.Checked)
+                    {
+                        // off -> on
+                        p.Checked = true;
+                    }
+                    else if (!e.Node.Checked && p.Checked)
+                    {
+                        // on -> off
+                        p.Checked = false;
+                    }
+                    p = p.Parent;
+                }
+
+            }
+            treeBlocks.ResumeLayout();
+            treeCheckLocked = false;
+            this.FillCondition();
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+
         }
     }
 }
