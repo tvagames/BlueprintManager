@@ -64,6 +64,17 @@
     <Compile Include="CategoryTreeNode.cs" />
     <Compile Include="ClipboardViewer.cs" />
     <Compile Include="ColorPalette.cs" />
+    <Compile Include="ColorPaletteControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorPaletteControl.Designer.cs">
+      <DependentUpon>ColorPaletteControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColorPaletteListControl.cs" />
+    <Compile Include="ColorPaletteList.cs" />
+    <Compile Include="ColorPalettePanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Config.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -89,6 +100,12 @@
     <Compile Include="FormBloclReplace.Designer.cs">
       <DependentUpon>FormBloclReplace.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormColorPalette.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormColorPalette.Designer.cs">
+      <DependentUpon>FormColorPalette.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormDefineEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +114,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ColorPaletteControl.resx">
+      <DependentUpon>ColorPaletteControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -108,6 +128,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormBloclReplace.resx">
       <DependentUpon>FormBloclReplace.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormColorPalette.resx">
+      <DependentUpon>FormColorPalette.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormDefineEditor.resx">
       <DependentUpon>FormDefineEditor.cs</DependentUpon>

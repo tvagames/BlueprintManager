@@ -19,6 +19,7 @@ namespace BlueprintManager
 
         private BackupManager backupMgr = new BackupManager();
         private Config config = new Config();
+        private FormColorPalette colorPaletteForm = new FormColorPalette();
 
         public Form1()
         {
@@ -433,6 +434,23 @@ namespace BlueprintManager
         {
             var f = new FormDefineEditor();
             f.ShowDialog();
+        }
+
+        private void colorPaletteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.bpListView.SelectedIndices.Count == 0)
+            {
+                return;
+            }
+
+            var bpi = (BlueprintItem)this.bpListView.SelectedItems[0].Tag;
+            var bp = BlueprintFile.Load(bpi.Path);
+            if (string.IsNullOrEmpty(colorPaletteForm.TargetPath))
+            {
+                colorPaletteForm.TargetPath = this.targetInput.Text;
+            }
+            colorPaletteForm.Blueprint = bp;
+            colorPaletteForm.ShowDialog();
         }
     }
 

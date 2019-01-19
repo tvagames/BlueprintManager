@@ -63,9 +63,9 @@ namespace BlueprintManager
                 {
                     var ret = this;
                     ret.Blocks = new List<BlockInfo>();
-                    this.Colors = new List<Color>();
                     var o = Newtonsoft.Json.Linq.JObject.Parse(json);
 
+                    this.Colors = new List<Color>();
                     var colors = o["Blueprint"]["COL"];
                     for (int i = 0; i < colors.Count(); i++)
                     {
@@ -130,6 +130,45 @@ namespace BlueprintManager
                     throw new Exception("block loading is failed.", ex);
                 }
             }
+        }
+
+        internal void SaveColors(Color[] colors)
+        {
+            Newtonsoft.Json.Linq.JObject jobj = null;
+            try
+            {
+
+                using (var sr = new System.IO.StreamReader(this.Path))
+                {
+                    var json = sr.ReadToEnd();
+                    var ret = this;
+                    jobj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    var s = colors.Select(item =>
+                    {
+                        return string.Format("{0},{1},{2},{3}", 
+                            (decimal)((decimal)item.R / 255M),
+                            (decimal)((decimal)item.G / 255M),
+                            (decimal)((decimal)item.B / 255M),
+                            (decimal)((decimal)item.A / 255M));
+                    }).ToArray();
+                    jobj["Blueprint"]["COL"] = new JArray(s);
+                }
+
+                if (jobj != null)
+                {
+                    using (var sw = new System.IO.StreamWriter(this.Path))
+                    {
+                        var json = jobj.ToString();
+                        sw.Write(json);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw new Exception("color palette error", ex);
+            }
+
         }
 
         internal void EraseBlocks(Dictionary<string, BlockIdItem> items, BlockCondition targetCondition)

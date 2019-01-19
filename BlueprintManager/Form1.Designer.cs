@@ -78,6 +78,7 @@
             this.restoreToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.defineEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.colorPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeContext.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -239,28 +240,29 @@
             this.blueprintFileContext.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.backupToolStripMenuItem1,
             this.blockReplaceToolStripMenuItem,
-            this.blockEraseToolStripMenuItem});
+            this.blockEraseToolStripMenuItem,
+            this.colorPaletteToolStripMenuItem});
             this.blueprintFileContext.Name = "blueprintFileContext";
-            this.blueprintFileContext.Size = new System.Drawing.Size(145, 70);
+            this.blueprintFileContext.Size = new System.Drawing.Size(153, 114);
             // 
             // backupToolStripMenuItem1
             // 
             this.backupToolStripMenuItem1.Name = "backupToolStripMenuItem1";
-            this.backupToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
+            this.backupToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.backupToolStripMenuItem1.Text = "Backup";
             this.backupToolStripMenuItem1.Click += new System.EventHandler(this.backupToolStripMenuItem1_Click);
             // 
             // blockReplaceToolStripMenuItem
             // 
             this.blockReplaceToolStripMenuItem.Name = "blockReplaceToolStripMenuItem";
-            this.blockReplaceToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.blockReplaceToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.blockReplaceToolStripMenuItem.Text = "Block replace";
             this.blockReplaceToolStripMenuItem.Click += new System.EventHandler(this.blockReplaceToolStripMenuItem_Click);
             // 
             // blockEraseToolStripMenuItem
             // 
             this.blockEraseToolStripMenuItem.Name = "blockEraseToolStripMenuItem";
-            this.blockEraseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.blockEraseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.blockEraseToolStripMenuItem.Text = "Block erase";
             this.blockEraseToolStripMenuItem.Click += new System.EventHandler(this.blockEraseToolStripMenuItem_Click);
             // 
@@ -438,7 +440,7 @@
             this.blockEraseToolStripMenuItem1,
             this.exitToolStripMenuItem1});
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(37, 19);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(37, 20);
             this.toolStripMenuItem1.Text = "File";
             // 
             // blockReplaceToolStripMenuItem1
@@ -470,7 +472,7 @@
             this.backupToolStripMenuItem3,
             this.restoreToolStripMenuItem1});
             this.backupToolStripMenuItem2.Name = "backupToolStripMenuItem2";
-            this.backupToolStripMenuItem2.Size = new System.Drawing.Size(58, 19);
+            this.backupToolStripMenuItem2.Size = new System.Drawing.Size(58, 20);
             this.backupToolStripMenuItem2.Text = "Backup";
             // 
             // startToolStripMenuItem1
@@ -506,15 +508,22 @@
             this.toolToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.defineEditorToolStripMenuItem});
             this.toolToolStripMenuItem.Name = "toolToolStripMenuItem";
-            this.toolToolStripMenuItem.Size = new System.Drawing.Size(41, 19);
+            this.toolToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.toolToolStripMenuItem.Text = "Tool";
             // 
             // defineEditorToolStripMenuItem
             // 
             this.defineEditorToolStripMenuItem.Name = "defineEditorToolStripMenuItem";
-            this.defineEditorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.defineEditorToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
             this.defineEditorToolStripMenuItem.Text = "Define editor";
             this.defineEditorToolStripMenuItem.Click += new System.EventHandler(this.defineEditorToolStripMenuItem_Click);
+            // 
+            // colorPaletteToolStripMenuItem
+            // 
+            this.colorPaletteToolStripMenuItem.Name = "colorPaletteToolStripMenuItem";
+            this.colorPaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.colorPaletteToolStripMenuItem.Text = "Color palette";
+            this.colorPaletteToolStripMenuItem.Click += new System.EventHandler(this.colorPaletteToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -603,6 +612,7 @@
         private System.Windows.Forms.ToolStripMenuItem restoreToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem defineEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem colorPaletteToolStripMenuItem;
     }
 }
 
