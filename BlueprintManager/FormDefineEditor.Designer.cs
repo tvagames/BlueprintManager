@@ -38,6 +38,7 @@
             this.cmbCategory = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
+            this.chkSubconst = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,10 +49,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(26, 128);
+            this.dataGridView1.Location = new System.Drawing.Point(26, 149);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 21;
-            this.dataGridView1.Size = new System.Drawing.Size(1004, 642);
+            this.dataGridView1.Size = new System.Drawing.Size(1004, 621);
             this.dataGridView1.TabIndex = 0;
             // 
             // btnBrowse
@@ -133,11 +134,22 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // chkSubconst
+            // 
+            this.chkSubconst.AutoSize = true;
+            this.chkSubconst.Location = new System.Drawing.Point(90, 112);
+            this.chkSubconst.Name = "chkSubconst";
+            this.chkSubconst.Size = new System.Drawing.Size(121, 19);
+            this.chkSubconst.TabIndex = 5;
+            this.chkSubconst.Text = "sub construction";
+            this.chkSubconst.UseVisualStyleBackColor = true;
+            // 
             // FormDefineEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1046, 843);
+            this.Controls.Add(this.chkSubconst);
             this.Controls.Add(this.cmbCategory);
             this.Controls.Add(this.nameInput);
             this.Controls.Add(this.label2);
@@ -170,5 +182,6 @@
         private System.Windows.Forms.ComboBox cmbCategory;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.CheckBox chkSubconst;
     }
 }

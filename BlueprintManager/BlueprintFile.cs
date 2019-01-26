@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlueprintManager
 {
-    public class BlueprintFile
+    public class BlueprintFile : Construction
     {
         public static BlueprintFile Load(string path)
         {
@@ -45,7 +45,6 @@ namespace BlueprintManager
         public string Path { get; set; }
         public int Version { get; set; }
         public Blueprint Blueprint { get; set; }
-        public List<BlockInfo> Blocks { get; set; }
         public float[] MaxCord { get; set; }
 
         public float[] MinCord { get; set; }
@@ -63,10 +62,11 @@ namespace BlueprintManager
                 {
                     var ret = this;
                     ret.Blocks = new List<BlockInfo>();
-                    var o = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    //var o = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    var jobj = Newtonsoft.Json.Linq.JObject.Parse(json);
 
                     this.Colors = new List<Color>();
-                    var colors = o["Blueprint"]["COL"];
+                    var colors = jobj["Blueprint"]["COL"];
                     for (int i = 0; i < colors.Count(); i++)
                     {
                         var rgba = colors.Value<string>(i)
@@ -79,26 +79,28 @@ namespace BlueprintManager
                             (int)(rgba[2] * 255)));
                     }
 
-                    var positions = o["Blueprint"]["BLP"];
-                    var rotations = o["Blueprint"]["BLR"];
-                    var blockIds = o["Blueprint"]["BlockIds"];
-                    var colorIndexes = o["Blueprint"]["BCI"];
+                    var jo = jobj["Blueprint"];
+                    this.LoadBlocks(jo, ret);
+                    //var positions = o["Blueprint"]["BLP"];
+                    //var rotations = o["Blueprint"]["BLR"];
+                    //var blockIds = o["Blueprint"]["BlockIds"];
+                    //var colorIndexes = o["Blueprint"]["BCI"];
 
-                    for (int i = 0; i < positions.Count(); i++)
-                    {
-                        var block = new BlockInfo();
-                        var p = positions.Value<string>(i).Split(',');
+                    //for (int i = 0; i < positions.Count(); i++)
+                    //{
+                    //    var block = new BlockInfo();
+                    //    var p = positions.Value<string>(i).Split(',');
 
-                        block.x = Convert.ToSingle(p[0]);
-                        block.y = Convert.ToSingle(p[1]);
-                        block.z = Convert.ToSingle(p[2]);
-                        block.id = (int)blockIds[i];
-                        block.colorIndex = (int)colorIndexes[i];
-                        block.rotation = (Rotation)rotations.Value<int>(i);
-                        ret.Blocks.Add(block);
-                    }
+                    //    block.x = Convert.ToSingle(p[0]);
+                    //    block.y = Convert.ToSingle(p[1]);
+                    //    block.z = Convert.ToSingle(p[2]);
+                    //    block.id = (int)blockIds[i];
+                    //    block.colorIndex = (int)colorIndexes[i];
+                    //    block.rotation = (Rotation)rotations.Value<int>(i);
+                    //    ret.Blocks.Add(block);
+                    //}
 
-                    var jobj = Newtonsoft.Json.Linq.JObject.Parse(json);
+                    //var jobj = Newtonsoft.Json.Linq.JObject.Parse(json);
                     var idMap = jobj["ItemDictionary"] as JObject;
                     this.BlockIdToUidMap = new Dictionary<string, string>();
                     this.UidToBlockIdMap = new Dictionary<string, string>();
@@ -130,6 +132,82 @@ namespace BlueprintManager
                     throw new Exception("block loading is failed.", ex);
                 }
             }
+        }
+
+        private Vector3 ConvertToBlockPosition(string s)
+        {
+            var pos = new Vector3();
+            var p = s.Split(',');
+
+            pos.X = Convert.ToSingle(p[0]);
+            pos.Y = Convert.ToSingle(p[1]);
+            pos.Z = Convert.ToSingle(p[2]);
+            return pos;
+        }
+
+        private void LoadBlocks(JToken o, Construction construction)
+        {
+
+            var positions = o["BLP"];
+            var rotations = o["BLR"];
+            var blockIds = o["BlockIds"];
+            var colorIndexes = o["BCI"];
+            var lps = o["LocalPosition"].Value<string>();
+            construction.LocalPosition = ConvertToBlockPosition(lps);
+            if (construction.Parent != null)
+            {
+                var pos = new Vector3();
+                pos.X = construction.Parent.Position.X + construction.LocalPosition.X;
+                pos.Y = construction.Parent.Position.Y + construction.LocalPosition.Y;
+                pos.Z = construction.Parent.Position.Z + construction.LocalPosition.Z;
+                construction.Position = pos;
+            }
+            else
+            {
+                construction.Position = construction.LocalPosition;
+            }
+
+            for (int i = 0; i < positions.Count(); i++)
+            {
+                var block = new BlockInfo();
+                block.localPosition = ConvertToBlockPosition(positions.Value<string>(i));
+
+                if (construction.Parent != null)
+                {
+                    var pos = new Vector3();
+                    pos.X = construction.Position.X + block.localPosition.X;
+                    pos.Y = construction.Position.Y + block.localPosition.Y;
+                    pos.Z = construction.Position.Z + block.localPosition.Z;
+                    block.position = pos;
+                    block.FillVertecies(block.position);
+                }
+                else
+                {
+                    block.position = block.localPosition;
+                    block.FillVertecies(block.position);
+                }
+                //var p = positions.Value<string>(i).Split(',');
+
+                //block.x = Convert.ToSingle(p[0]);
+                //block.y = Convert.ToSingle(p[1]);
+                //block.z = Convert.ToSingle(p[2]);
+                block.id = (int)blockIds[i];
+                block.colorIndex = (int)colorIndexes[i];
+                block.rotation = (Rotation)rotations.Value<int>(i);
+                construction.Blocks.Add(block);
+            }
+
+
+            var scs = o["SCs"];
+            for (int i = 0; i < scs.Count(); i++)
+            {
+                var sc = scs.ElementAt(i);
+                var subconst = new Construction();
+                subconst.Parent = construction;
+                LoadBlocks(sc, subconst);
+                construction.Subconstructions.Add(subconst);
+            }
+
         }
 
         internal void SaveColors(Color[] colors)
@@ -202,7 +280,7 @@ namespace BlueprintManager
 
         }
 
-        private void EraseBlocks(JToken jobj, Dictionary<string, BlockIdItem> items, BlockCondition targetCondition, bool isMain = true)
+        private bool EraseBlocks(JToken jobj, Dictionary<string, BlockIdItem> items, BlockCondition targetCondition, bool isMain = true)
         {
             try
             {
@@ -279,6 +357,12 @@ namespace BlueprintManager
                             {
                                 beiIdMap.Remove(i);
                             }
+
+                            if (i == 0 && items.ContainsKey(uid) && items[uid].IsSubconstruction)
+                            {
+                                // remove this construction
+                                return true;
+                            }
                         }
                     }
                     jobj["BlockIds"] = new JArray(newBlockIds.ToArray());
@@ -295,13 +379,25 @@ namespace BlueprintManager
                     var subconstructs = jobj["SCs"];
                     if (subconstructs != null)
                     {
+                        var removingIndexes = new List<int>();
                         for (int i = 0; i < subconstructs.Count(); i++)
                         {
                             var subconstruct = subconstructs.ElementAt(i);
-                            this.EraseBlocks(subconstruct, items, targetCondition, false);
+                            if (this.EraseBlocks(subconstruct, items, targetCondition, false))
+                            {
+                                // remove construction
+                                removingIndexes.Add(i);
+                            }
+                        }
+                        for (int i = removingIndexes.Count - 1; 0 <= i; i--)
+                        {
+                            var subconstruct = subconstructs.ElementAt(removingIndexes[i]);
+                            subconstruct.Remove();
                         }
                     }
                 }
+                return false;
+
             }
             catch (Exception ex)
             {
@@ -382,15 +478,15 @@ namespace BlueprintManager
 
                         var isTarget = true;
                         // position
-                        if (targetCondition.IsX && !IsHitPosition(blockInfo.x, targetCondition.XFrom, targetCondition.XTo, targetCondition.IsXInverted))
+                        if (targetCondition.IsX && !IsHitPosition(blockInfo.localPosition.X, targetCondition.XFrom, targetCondition.XTo, targetCondition.IsXInverted))
                         {
                             isTarget = false;
                         }
-                        if (targetCondition.IsY && !IsHitPosition(blockInfo.y, targetCondition.YFrom, targetCondition.YTo, targetCondition.IsYInverted))
+                        if (targetCondition.IsY && !IsHitPosition(blockInfo.localPosition.Y, targetCondition.YFrom, targetCondition.YTo, targetCondition.IsYInverted))
                         {
                             isTarget = false;
                         }
-                        if (targetCondition.IsZ && !IsHitPosition(blockInfo.z, targetCondition.ZFrom, targetCondition.ZTo, targetCondition.IsZInverted))
+                        if (targetCondition.IsZ && !IsHitPosition(blockInfo.localPosition.Z, targetCondition.ZFrom, targetCondition.ZTo, targetCondition.IsZInverted))
                         {
                             isTarget = false;
                         }
@@ -492,7 +588,7 @@ namespace BlueprintManager
 
         private Color GetColor(BlockIdItem block, BlockInfo item, BlockCondition targetCondition)
         {
-            if (this.IsHitBlock(block, item, targetCondition))
+            if (targetCondition != null && this.IsHitBlock(block, item, targetCondition))
             {
                 return Color.FromArgb(255, 255, 0, 0);
             }
@@ -507,13 +603,15 @@ namespace BlueprintManager
 
         public Bitmap GetBmp(Dictionary<string, BlockIdItem> items, BlockCondition targetCondition)
         {
-            var orderedList = this.Blocks.OrderBy(item => item.y);
+            var allBlocks = this.GetAllBlocks();
+            var orderedList = allBlocks.OrderBy(item => item.position.Y);
             float zoom = 3;
             float offsetX = this.MinCord[2] * -1;
             float offsetY = this.MaxCord[1] * 1;
             offsetX += 10;
             offsetY += 10;
             Color color = Color.FromArgb(64, 128, 128, 128);
+            Color originColor = Color.Green;
             this.bmp = new Bitmap(1000, 1000); ;
 
             Graphics g = Graphics.FromImage(this.bmp);
@@ -530,10 +628,7 @@ namespace BlueprintManager
                     continue;
                 }
                 var block = items[uid];
-                if (block.Name.Contains(""))
-                {
-
-                }
+     
 
                 color = this.GetColor(block, item, targetCondition);
 
@@ -566,13 +661,15 @@ namespace BlueprintManager
                     len = block.Width;
                 }
 
-                this.DrawBeam(zoom, offsetX, offsetY, g, item, item.z, item.x, len, d, color);
+                this.DrawBeam(zoom, offsetX, offsetY, g, item.position.Z, item.position.X, len, d, color);
             }
+            this.DrawBeam(zoom, offsetX, offsetY, g, 0, 0, 1, Direction.Top, originColor);
+
             offsetY += 50;
             offsetY += this.MinCord[1] * -1;
             offsetY += this.MaxCord[0] * 1;
 
-            foreach (var item in this.Blocks.OrderBy(item => item.x))
+            foreach (var item in allBlocks.OrderBy(item => item.position.X))
             {
                 if (!this.BlockIdToUidMap.ContainsKey(item.id.ToString()))
                 {
@@ -617,15 +714,16 @@ namespace BlueprintManager
                     d = Direction.Top;
                 }
 
-                this.DrawBeam(zoom, offsetX, offsetY, g, item, item.z, item.y * -1, len, d, color);
+                this.DrawBeam(zoom, offsetX, offsetY, g, item.position.Z, item.position.Y * -1, len, d, color);
             }
+            this.DrawBeam(zoom, offsetX, offsetY, g, 0, 0, 1, Direction.Top, originColor);
 
 
             offsetX += 50;
             offsetX += this.MinCord[0] * -1;
             offsetX += this.MaxCord[2] * 1;
 
-            foreach (var item in this.Blocks.OrderBy(item => item.z))
+            foreach (var item in allBlocks.OrderBy(item => item.position.Z))
             {
                 if (!this.BlockIdToUidMap.ContainsKey(item.id.ToString()))
                 {
@@ -670,8 +768,9 @@ namespace BlueprintManager
                     d = Direction.Top;
                 }
 
-                this.DrawBeam(zoom, offsetX, offsetY, g, item, item.x, item.y * -1, len, d, color);
+                this.DrawBeam(zoom, offsetX, offsetY, g, item.position.X, item.position.Y * -1, len, d, color);
             }
+            this.DrawBeam(zoom, offsetX, offsetY, g, 0, 0, 1, Direction.Top, originColor);
 
             return this.bmp;
         }
@@ -710,15 +809,15 @@ namespace BlueprintManager
             }
 
             // position
-            if (targetCondition.IsX && !IsHitPosition(item.x, targetCondition.XFrom, targetCondition.XTo, targetCondition.IsXInverted))
+            if (targetCondition.IsX && !IsHitPosition(item.localPosition.X, targetCondition.XFrom, targetCondition.XTo, targetCondition.IsXInverted))
             {
                 return false;
             }
-            if (targetCondition.IsY && !IsHitPosition(item.y, targetCondition.YFrom, targetCondition.YTo, targetCondition.IsYInverted))
+            if (targetCondition.IsY && !IsHitPosition(item.localPosition.Y, targetCondition.YFrom, targetCondition.YTo, targetCondition.IsYInverted))
             {
                 return false;
             }
-            if (targetCondition.IsZ && !IsHitPosition(item.z, targetCondition.ZFrom, targetCondition.ZTo, targetCondition.IsZInverted))
+            if (targetCondition.IsZ && !IsHitPosition(item.localPosition.Z, targetCondition.ZFrom, targetCondition.ZTo, targetCondition.IsZInverted))
             {
                 return false;
             }
@@ -837,7 +936,7 @@ namespace BlueprintManager
         }
 
 
-        private void DrawBeam(float zoom, float offsetX, float offsetY, Graphics g, BlockInfo item, float x, float y, float beam, Direction direct, Color color)
+        private void DrawBeam(float zoom, float offsetX, float offsetY, Graphics g, float x, float y, float beam, Direction direct, Color color)
         {
             if (x == 0)
             {
@@ -879,6 +978,104 @@ namespace BlueprintManager
                 g.FillRectangle(new SolidBrush(color), r);
             }
         }
+
+        public void Draw3d(Graphics g, float zoom, Vector3 rotate, PointF offset, Dictionary<string, BlockIdItem> items, BlockCondition targetCondition)
+        {
+   
+            var allBlocks = this.GetAllBlocks();
+            var orderedList = allBlocks.OrderBy(item => item.position.Y);
+            foreach (var item in orderedList)
+            {
+                if (!this.BlockIdToUidMap.ContainsKey(item.id.ToString()))
+                {
+                    continue;
+                }
+                var uid = this.BlockIdToUidMap[item.id.ToString()];
+                var block = items[uid];
+                var color = this.GetColor(block, item, targetCondition);
+                
+                this.DrawBlock(g, zoom, rotate, item, offset, color);
+
+            }
+        }
+
+        private void DrawBlock(Graphics g, float zoom, Vector3 rotate, BlockInfo block, PointF offset, Color color)
+        {
+            var v = block.Vertecis.Select(s => new Vector3()
+            {
+                X = s.X * zoom,
+                Y = s.Y * zoom,
+                Z = s.Z * zoom
+            }).ToArray();
+            RotateZ(rotate.X, v);
+            RotateY(rotate.Y, v);
+            //RotateZ(rotate.Z, v);
+
+            this.DrawCube(g, v, offset, color);
+        }
+
+        private void DrawCube(Graphics g, Vector3[] vertecis, PointF offset, Color color)
+        {
+            var points = vertecis.Select(v => new PointF(v.X + offset.X, v.Y + offset.Y)).ToArray();
+            using (var b = new SolidBrush(color))
+            {
+                g.FillPolygon(b, new PointF[] { points[0], points[1], points[2], points[3] });
+                g.FillPolygon(b, new PointF[] { points[4], points[5], points[6], points[7] });
+                g.FillPolygon(b, new PointF[] { points[4], points[5], points[1], points[0] });
+                g.FillPolygon(b, new PointF[] { points[7], points[6], points[2], points[3] });
+                g.FillPolygon(b, new PointF[] { points[1], points[2], points[6], points[5] });
+                g.FillPolygon(b, new PointF[] { points[4], points[7], points[3], points[0] });
+            }
+
+            //var lineColor = Color.FromArgb(64, 64, 64, 64);
+            //using (var p  = new Pen(lineColor))
+            //{
+            //    g.DrawPolygon(p, new PointF[] { points[0], points[1], points[2], points[3] });
+            //    g.DrawPolygon(p, new PointF[] { points[4], points[5], points[6], points[7] });
+            //    g.DrawPolygon(p, new PointF[] { points[4], points[5], points[1], points[0] });
+            //    g.DrawPolygon(p, new PointF[] { points[7], points[6], points[2], points[3] });
+            //    g.DrawPolygon(p, new PointF[] { points[1], points[2], points[6], points[5] });
+            //    g.DrawPolygon(p, new PointF[] { points[4], points[7], points[3], points[0] });
+            //}
+
+        }
+
+        private void RotateZ(float deg, Vector3[] vertecis)
+        {
+            var angle = Math.PI * deg / 180.0;
+            foreach (var item in vertecis)
+            {
+                var x = item.X;
+                var y = item.Y;
+                item.X = (float)(x * Math.Cos(angle) - y * Math.Sin(angle));
+                item.Y = (float)(x * Math.Sin(angle) + y * Math.Cos(angle));
+            }
+        }
+
+        private void RotateY(float deg, Vector3[] vertecis)
+        {
+            var angle = Math.PI * deg / 180.0;
+            foreach (var item in vertecis)
+            {
+                var x = item.X;
+                var y = item.Z;
+                item.X = (float)(x * Math.Cos(angle) - y * Math.Sin(angle));
+                item.Z = (float)(x * Math.Sin(angle) + y * Math.Cos(angle));
+            }
+        }
+
+        private void RotateX(float deg, Vector3[] vertecis)
+        {
+            var angle = Math.PI * deg / 180.0;
+            foreach (var item in vertecis)
+            {
+                var x = item.Z;
+                var y = item.Y;
+                item.Z = (float)(x * Math.Cos(angle) - y * Math.Sin(angle));
+                item.Y = (float)(x * Math.Sin(angle) + y * Math.Cos(angle));
+            }
+        }
+
 
     }
 

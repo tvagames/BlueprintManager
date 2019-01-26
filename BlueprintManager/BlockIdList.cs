@@ -46,6 +46,7 @@ namespace BlueprintManager
         public DefinitionsStatus Defined { get; set; }
         public string Category { get; set; }
         public GroupedStatus Grouped { get; set; }
+        public bool IsSubconstruction { get; set; }
 
         public override string ToString()
         {
@@ -95,6 +96,13 @@ namespace BlueprintManager
                     {
                         item.Length = temp;
                     }
+                    if (factor.Length >= 6 && int.TryParse(factor[5].Trim('"'), out temp))
+                    {
+                        if (temp == 1)
+                        {
+                            item.IsSubconstruction = true;
+                        }
+                    }
 
                     if (int.TryParse(item.Name, out temp))
                     {
@@ -117,7 +125,7 @@ namespace BlueprintManager
         {
             using (var sr = new StreamWriter("BlockIdList.csv"))
             {
-                sr.WriteLine("\"UID\",\"name\", \"width\", \"height\", \"length\"");
+                sr.WriteLine("\"UID\",\"name\", \"width\", \"height\", \"length\", \"subconstruction\"");
                 foreach (var item in list.Values)
                 {
                     sr.Write("\"" + item.Uid + "\"");
@@ -125,6 +133,7 @@ namespace BlueprintManager
                     sr.Write(",\"" + item.Width + "\"");
                     sr.Write(",\"" + item.Height + "\"");
                     sr.Write(",\"" + item.Length + "\"");
+                    sr.Write(",\"" + (item.IsSubconstruction ? "1" : "0") + "\"");
                     sr.WriteLine("");
                 }
             }

@@ -43,10 +43,11 @@ namespace BlueprintManager
                 table.Columns.Add("Definitions");
                 table.Columns.Add("Category");
                 table.Columns.Add("Grouped");
+                table.Columns.Add("IsSubconstruction");
 
                 foreach (var item in this.BlockIdList.Values)
                 {
-                    table.Rows.Add(new object[]{ item.Uid, item.Name, item.Width, item.Height, item.Length, item.Defined, item.Category, item.Grouped });
+                    table.Rows.Add(new object[]{ item.Uid, item.Name, item.Width, item.Height, item.Length, item.Defined, item.Category, item.Grouped, item.IsSubconstruction });
                 }
 
                 this.dataGridView1.DataSource = table;
@@ -98,6 +99,10 @@ namespace BlueprintManager
                     {
                         this.dataGridView1.CurrentCell = row.Cells[0];
                         this.nameInput.Text = row.Cells[1].Value as string;
+                        this.cmbCategory.Text = row.Cells[6].Value.ToString();
+                        bool temp;
+                        bool.TryParse(row.Cells[8].Value.ToString(), out temp);
+                        this.chkSubconst.Checked = temp;
                         row.Selected = true;
                         break;
                     }
@@ -127,6 +132,7 @@ namespace BlueprintManager
                     row.Cells[1].Value = this.nameInput.Text;
                     row.Cells[5].Value = defStatus;
                     row.Cells[6].Value = this.cmbCategory.Text.Trim();
+                    row.Cells[8].Value = this.chkSubconst.Checked;
                     accepted = true;
                     break;
                 }
@@ -142,7 +148,8 @@ namespace BlueprintManager
                     0,
                     defStatus,
                     "",
-                    GroupedStatus.NotGrouped
+                    GroupedStatus.NotGrouped,
+                    false
                 });
                 this.dataGridView1.Rows[this.dataGridView1.Rows.Count - 1].Selected = true;
                 this.dataGridView1.CurrentCell = this.dataGridView1.Rows[this.dataGridView1.Rows.Count - 1].Cells[0];
@@ -162,6 +169,7 @@ namespace BlueprintManager
                     var height = row.Cells[3].Value as string;
                     var length = row.Cells[4].Value as string;
                     var category = row.Cells[6].Value as string;
+                    var isSubconstruction = row.Cells[8].Value as string;
 
                     var item = new BlockIdItem();
                     item.Uid = uid;
@@ -180,6 +188,13 @@ namespace BlueprintManager
                     {
                         item.Length = temp;
                     }
+
+                    bool tempFlag = false;
+                    if (bool.TryParse(isSubconstruction, out tempFlag))
+                    {
+                        item.IsSubconstruction = tempFlag;
+                    }
+
                     this.BlockIdList.Add(uid, item);
                 }
 
