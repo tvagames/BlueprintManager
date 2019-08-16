@@ -53,8 +53,13 @@
             this.chkX = new System.Windows.Forms.CheckBox();
             this.cmbColor = new System.Windows.Forms.ComboBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pnlPreview = new System.Windows.Forms.Panel();
+            this.inputZoom = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.pnlPreview.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.inputZoom)).BeginInit();
             this.SuspendLayout();
             // 
             // btnErase
@@ -347,21 +352,63 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox1.Location = new System.Drawing.Point(451, 62);
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(640, 708);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
+            // 
+            // pnlPreview
+            // 
+            this.pnlPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlPreview.AutoScroll = true;
+            this.pnlPreview.Controls.Add(this.pictureBox1);
+            this.pnlPreview.Location = new System.Drawing.Point(459, 62);
+            this.pnlPreview.Name = "pnlPreview";
+            this.pnlPreview.Size = new System.Drawing.Size(647, 672);
+            this.pnlPreview.TabIndex = 4;
+            // 
+            // inputZoom
+            // 
+            this.inputZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.inputZoom.Location = new System.Drawing.Point(541, 747);
+            this.inputZoom.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.inputZoom.Name = "inputZoom";
+            this.inputZoom.Size = new System.Drawing.Size(72, 23);
+            this.inputZoom.TabIndex = 5;
+            this.inputZoom.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.inputZoom.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.inputZoom.ValueChanged += new System.EventHandler(this.inputZoom_ValueChanged);
+            // 
+            // label1
+            // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(496, 749);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(39, 15);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "zoom";
             // 
             // FormBlockErase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1118, 787);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.inputZoom);
+            this.Controls.Add(this.pnlPreview);
             this.Controls.Add(this.btnErase);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label3);
@@ -373,6 +420,9 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.pnlPreview.ResumeLayout(false);
+            this.pnlPreview.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.inputZoom)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -404,5 +454,8 @@
         private System.Windows.Forms.Label lblTargetColor;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TreeView treeBlocks;
+        private System.Windows.Forms.Panel pnlPreview;
+        private System.Windows.Forms.NumericUpDown inputZoom;
+        private System.Windows.Forms.Label label1;
     }
 }
