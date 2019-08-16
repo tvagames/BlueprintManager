@@ -19,7 +19,7 @@ namespace BlueprintManager
 
         private BlockCondition TargetCondition { get; set; } = new BlockCondition();
         private BlockAction Action { get; set; } = new BlockAction();
-        public Dictionary<string, BlockIdItem> BlockIdList { get; set; }
+        public Dictionary<string, BlockDefinition> BlockDefinitions { get; set; }
         public BlueprintFile Blueprint { get; set; }
         internal CategoryTreeNode Tree { get; private set; }
 
@@ -28,18 +28,18 @@ namespace BlueprintManager
             try
             {
                 this.Tree = CategoryTree.Load(CategoryTree.CATEGORY_TREE_FILE);
-                this.BlockIdList = BlockIdStore.LoadIdList();
                 this.Blueprint.LoadBlocks();
+                this.BlockDefinitions = this.Blueprint.BlockDefinitions; // BlockDefinitionStore.LoadBlockDefinitions();
 
                 this.treeBlocks.Nodes.Clear();
                 this.AddTreeNode(this.Tree, null);
 
                 {
                     var node = new TreeNode("unknown");
-                    var list = this.BlockIdList.Where(w => string.IsNullOrEmpty(w.Value.Category)).ToList();
+                    var list = this.BlockDefinitions.Where(w => string.IsNullOrEmpty(w.Value.Category)).ToList();
                     foreach (var item in list)
                     {
-                        var block = this.BlockIdList[item.Key];
+                        var block = this.BlockDefinitions[item.Key];
                         node.Nodes.Add(block.Name).Tag = block;
                     }
                     this.treeBlocks.Nodes.Add(node);
@@ -64,7 +64,7 @@ namespace BlueprintManager
 
                 this.lblName.Text = this.Blueprint.Name;
                 this.FillCondition();
-                this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+                this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
             }
             catch (Exception ex)
@@ -87,7 +87,7 @@ namespace BlueprintManager
                 {
                     foreach (var uid in category.Items)
                     {
-                        var block = this.BlockIdList[uid];
+                        var block = this.BlockDefinitions[uid];
                         block.Category = category.Name;
                         node.Nodes.Add(block.Name).Tag = block;
                     }
@@ -110,9 +110,9 @@ namespace BlueprintManager
                 var map = new Dictionary<string, string>();
 
                 this.FillCondition();
-                this.Blueprint.EraseBlocks(this.BlockIdList, this.TargetCondition);
+                this.Blueprint.EraseBlocks(this.BlockDefinitions, this.TargetCondition);
                 this.Blueprint.LoadBlocks();
-                this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+                this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
                 MessageBox.Show("completed");
             }
@@ -193,14 +193,14 @@ namespace BlueprintManager
             this.TargetCondition.Blocks = this.GetTargetBlocks(this.treeBlocks.Nodes);
         }
 
-        private List<BlockIdItem> GetTargetBlocks(TreeNodeCollection nodes)
+        private List<BlockDefinition> GetTargetBlocks(TreeNodeCollection nodes)
         {
-            var targetBlocks = new List<BlockIdItem>();
+            var targetBlocks = new List<BlockDefinition>();
             foreach (TreeNode node in nodes)
             {
                 if (node.Checked && node.Tag != null)
                 {
-                    targetBlocks.Add((BlockIdItem)node.Tag);
+                    targetBlocks.Add((BlockDefinition)node.Tag);
                 }
 
                 if (node.Nodes.Count > 0)
@@ -217,7 +217,7 @@ namespace BlueprintManager
             this.lblTargetColor.BackColor = this.Blueprint.Colors[i];
             this.lblTargetColor.Text = i.ToString();
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
@@ -225,7 +225,7 @@ namespace BlueprintManager
         {
             this.cmbColor.Enabled = this.chkColor.Checked;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
@@ -235,7 +235,7 @@ namespace BlueprintManager
             this.txtXTo.Enabled = this.chkX.Checked;
             this.chkXinv.Enabled = this.chkX.Checked;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
@@ -245,7 +245,7 @@ namespace BlueprintManager
             this.txtYTo.Enabled = this.chkY.Checked;
             this.chkYinv.Enabled = this.chkY.Checked;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
 
         }
@@ -256,7 +256,7 @@ namespace BlueprintManager
             this.txtZTo.Enabled = this.chkZ.Checked;
             this.chkZinv.Enabled = this.chkZ.Checked;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
 
         }
@@ -264,84 +264,84 @@ namespace BlueprintManager
         private void cmbGroupFrom_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void cmbBlockFrom_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void chkObjects_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void txtXFrom_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void txtXTo_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void txtYFrom_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void txtYTo_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void txtZFrom_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void txtZTo_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void chkXinv_CheckedChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void chkYinv_CheckedChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
         private void chkZinv_CheckedChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
 
@@ -435,7 +435,7 @@ namespace BlueprintManager
             treeBlocks.ResumeLayout();
             treeCheckLocked = false;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockIdList, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
 
         }
     }

@@ -452,6 +452,12 @@ namespace BlueprintManager
             colorPaletteForm.Blueprint = bp;
             colorPaletteForm.ShowDialog();
         }
+
+        private void blueprintEditorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var f = new FormBlueprintEditor();
+            f.ShowDialog();
+        }
     }
 
     public class ListViewItemComparer : IComparer

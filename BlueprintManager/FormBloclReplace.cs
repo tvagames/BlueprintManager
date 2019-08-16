@@ -19,7 +19,7 @@ namespace BlueprintManager
 
         private BlockCondition TargetCondition { get; set; } = new BlockCondition();
         private BlockAction Action { get; set; } = new BlockAction();
-        public Dictionary<string, BlockIdItem> BlockIdList { get; set; }
+        public Dictionary<string, BlockDefinition> BlockIdList { get; set; }
         public Dictionary<string, List<string>> GroupMap { get; set; }
         public BlueprintFile Blueprint { get; set; }
 
@@ -28,9 +28,9 @@ namespace BlueprintManager
         {
             try
             {
-                this.BlockIdList = BlockIdStore.LoadIdList();
-                this.GroupMap = BlockIdStore.LoadGroupMap();
                 this.Blueprint.LoadBlocks();
+                this.BlockIdList = this.Blueprint.BlockDefinitions;// BlockDefinitionStore.LoadBlockDefinitions();
+                this.GroupMap = BlockDefinitionStore.LoadGroupMap();
 
                 this.cmbGroupFrom.Items.Clear();
                 foreach (var key in this.GroupMap.Keys)
@@ -126,7 +126,7 @@ namespace BlueprintManager
                 this.TargetCondition.Target = BlockCondition.TargetType.Block;
             }
 
-            this.TargetCondition.Block = this.cmbBlockFrom.SelectedItem as BlockIdItem;
+            this.TargetCondition.Block = this.cmbBlockFrom.SelectedItem as BlockDefinition;
             var fromKey = this.cmbGroupFrom.Items[this.cmbGroupFrom.SelectedIndex] as string;
             this.TargetCondition.Group = this.GroupMap[fromKey];
 
@@ -211,7 +211,7 @@ namespace BlueprintManager
                 this.Action.Action = BlockAction.ActionType.Block;
             }
 
-            this.Action.Block = this.cmbBlockTo.SelectedItem as BlockIdItem;
+            this.Action.Block = this.cmbBlockTo.SelectedItem as BlockDefinition;
             var key = this.cmbGroupTo.Items[this.cmbGroupTo.SelectedIndex] as string;
             this.Action.Group = this.GroupMap[key];
 

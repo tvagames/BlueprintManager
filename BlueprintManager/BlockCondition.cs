@@ -17,8 +17,8 @@ namespace BlueprintManager
         }
         public TargetType Target { get; set; }
         public List<string> Group { get; set; }
-        public BlockIdItem Block { get; set; }
-        public List<BlockIdItem> Blocks { get; set; } = new List<BlockIdItem>();
+        public BlockDefinition Block { get; set; }
+        public List<BlockDefinition> Blocks { get; set; } = new List<BlockDefinition>();
 
         public bool IsColor { get; set; }
         public int ColorNumber { get; set; }

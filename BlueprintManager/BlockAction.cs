@@ -5,7 +5,7 @@ namespace BlueprintManager
 {
     internal class BlockAction
     {
-        public BlockIdItem Block { get; internal set; }
+        public BlockDefinition Block { get; internal set; }
 
         public bool IsColorPalette { get; set; }
         public ColorPalette ColorPalette { get; internal set; }

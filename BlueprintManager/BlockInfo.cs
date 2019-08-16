@@ -127,7 +127,7 @@ namespace BlueprintManager
                 || this.rotation == Rotation.DownRight;
         }
 
-        internal void FillVertecies(Vector3 pos)
+        internal void FillVertecies(Vector3 pos, BlockDefinition def)
         {
             float size = 1;
             float s1 = size / 2;
@@ -138,11 +138,16 @@ namespace BlueprintManager
                 new Vector3() { X = pos.X + s1 * +1, Y = pos.Y + s1 * -1, Z = pos.Z + s1 * -1 },
                 new Vector3() { X = pos.X + s1 * +1, Y = pos.Y + s1 * +1, Z = pos.Z + s1 * -1 },
                 new Vector3() { X = pos.X + s1 * -1, Y = pos.Y + s1 * +1, Z = pos.Z + s1 * -1 },
-                new Vector3() { X = pos.X + s1 * -1, Y = pos.Y + s1 * -1, Z = pos.Z + s1 * +1 },
-                new Vector3() { X = pos.X + s1 * +1, Y = pos.Y + s1 * -1, Z = pos.Z + s1 * +1 },
-                new Vector3() { X = pos.X + s1 * +1, Y = pos.Y + s1 * +1, Z = pos.Z + s1 * +1 },
-                new Vector3() { X = pos.X + s1 * -1, Y = pos.Y + s1 * +1, Z = pos.Z + s1 * +1 },
+                new Vector3() { X = pos.X + s1 * -1, Y = pos.Y + s1 * -1, Z = pos.Z + s1 * +1 + def.Length - 1 },
+                new Vector3() { X = pos.X + s1 * +1, Y = pos.Y + s1 * -1, Z = pos.Z + s1 * +1 + def.Length - 1 },
+                new Vector3() { X = pos.X + s1 * +1, Y = pos.Y + s1 * +1, Z = pos.Z + s1 * +1 + def.Length - 1 },
+                new Vector3() { X = pos.X + s1 * -1, Y = pos.Y + s1 * +1, Z = pos.Z + s1 * +1 + def.Length - 1 },
             };
+
+            // rotateの適用
+
+            // 親のrotateの適用
+
             this.Vertecis.AddRange(vertecis);
         }
     }

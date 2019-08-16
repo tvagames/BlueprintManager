@@ -36,7 +36,7 @@ namespace BlueprintManager
     }
 
 
-    public class BlockIdItem
+    public class BlockDefinition
     {
         public string Uid { get; set; }
         public string Name { get; set; }
@@ -54,11 +54,11 @@ namespace BlueprintManager
         }
     }
 
-    class BlockIdStore
+    class BlockDefinitionStore
     {
-        public static Dictionary<string, BlockIdItem> LoadIdList()
+        public static Dictionary<string, BlockDefinition> LoadBlockDefinitions()
         {
-            var ret = new Dictionary<string, BlockIdItem>();
+            var ret = new Dictionary<string, BlockDefinition>();
             using (var sr = new StreamReader("BlockIdList.csv"))
             {
                 var isHeader = true;
@@ -76,7 +76,7 @@ namespace BlueprintManager
                         continue;
                     }
 
-                    var item = new BlockIdItem()
+                    var item = new BlockDefinition()
                     {
                         Uid = factor[0].Trim('"'),
                         Name = factor[1].Trim('"'),
@@ -121,7 +121,7 @@ namespace BlueprintManager
             return ret;
         }
 
-        public static void SaveIdList(Dictionary<string, BlockIdItem> list)
+        public static void SaveBlockDefinitions(Dictionary<string, BlockDefinition> list)
         {
             using (var sr = new StreamWriter("BlockIdList.csv"))
             {

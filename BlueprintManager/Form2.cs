@@ -19,13 +19,13 @@ namespace BlueprintManager
 
         public BlueprintFile Blueprint { get; set; }
         private Bitmap bmp;
-        public Dictionary<string, BlockIdItem> BlockIdList { get; set; }
+        public Dictionary<string, BlockDefinition> BlockIdList { get; set; }
 
 
         private void Form2_Load(object sender, EventArgs e)
         {
             this.Blueprint.LoadBlocks();
-            this.BlockIdList = BlockIdStore.LoadIdList();
+            this.BlockIdList = BlockDefinitionStore.LoadBlockDefinitions();
             
         }
 

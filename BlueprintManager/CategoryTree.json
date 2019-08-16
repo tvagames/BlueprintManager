@@ -1,4 +1,4 @@
-﻿{
+{
   "Name": "Node",
   "Items": [],
   "SubCategories": [
@@ -319,7 +319,44 @@
             "1abc7373-c658-47aa-91ce-ce3242dbf329",
             "54916861-4b52-4fa0-a42c-b08736b7b930",
             "79d73a29-95de-4918-a69f-207149aab6a3",
-            "def39d03-c87b-4794-a306-9dc741ff990e"
+            "def39d03-c87b-4794-a306-9dc741ff990e",
+            "d5e50322-fbc0-4e09-bfab-050f431146a9",
+            "19ee2ba3-9443-4a44-97fd-bad9b1443895",
+            "ea1c1e77-149d-406c-8b81-1a45537ab1bf",
+            "9ee81122-d411-48a8-adee-73f0a2241176",
+            "df61d4c4-a514-4f23-baab-4da8fce066a3",
+            "354bc2b0-de06-4948-ad1e-2fbcef516cb7",
+            "7579ca39-af82-4a2c-83f6-a2090ae50d6b",
+            "97ea8dab-dc9b-4056-9532-78533e3b82bf",
+            "6d965de2-535a-4574-bf5b-b52c40dcc0d0",
+            "2a188034-0d97-4592-9a07-caa8b86b8a13",
+            "267c3871-b012-4856-b640-00bdb3cfe287",
+            "4581670a-fab6-40f8-aced-998dea107b68",
+            "67ac785e-154d-4326-9df4-559b122d0aaa",
+            "7667a2ad-20b5-434a-9ec3-37acb16027dd",
+            "4aa571ec-2dc8-4cd3-b0a8-e5f97a9d2935",
+            "c507ebe0-42ce-42f5-9b22-93c37beb6db8",
+            "33040759-1059-4ef5-9ebc-dcf9a90bbd6d",
+            "fce44a0b-df1b-45f2-bfa8-159bfc00d192",
+            "5d9365d3-0598-44c4-b6e2-0dd8c4fd5101",
+            "9c7311fb-fbf7-4bb1-a953-7823e38c733c",
+            "571c4683-f2d6-4a9e-9e64-b2853a6ad51e",
+            "920ca276-3c8c-4558-b9c4-b5d216c15a6a",
+            "845a8639-bf04-4550-9524-9dbcaf55a163",
+            "b39d779b-02a4-4c66-b6a0-2b712ed5e5ab",
+            "9b28100a-6d85-4680-b3f1-e3f068298cd9",
+            "ab2d7e9b-c4ee-41d1-84aa-998895dfc28b",
+            "2ffb6856-1994-422a-b303-bcd9c3d17c07",
+            "57dac102-64bb-45fc-9f62-4322315fc29e",
+            "a38cee19-5de4-4a83-ad48-54257af58a4e",
+            "0bd61bef-d0d3-459e-a1d1-4c899523d45f",
+            "24677e74-5178-4fca-bf14-9fb0181014f5",
+            "e90a832b-32d6-4695-98a3-70793885d616",
+            "6a20f299-6c3e-4406-a859-157075aab08d",
+            "b0bb3f96-4f2a-4e9f-8372-a800dc9a10d5",
+            "3123cb13-73e9-4d32-89dd-5ce567ee1597",
+            "4984255b-5dcf-4bb8-9ea2-917eac36b06d",
+            "\tab2d7e9b-c4ee-41d1-84aa-998895dfc28b\tLead triangle corner (left) (2m)\t0\t0\t0\tNamed\t\tNotGrouped\tFalse"
           ],
           "SubCategories": null
         },
@@ -375,7 +412,7 @@
             "924ebc61-bf03-4fd9-9c24-ffedd23592cd",
             "4bec3c1c-f47c-4dd6-b8c4-6255f11b0127",
             "30a8fc02-0133-4dbe-9a6f-1e4df68ac635",
-            "ef642411-03bb-4c82-9bd4-5ae525e50023",
+            "ef642411-03bb-4c82-9bd4-5ae525e50023"
           ],
           "SubCategories": null
         },
@@ -431,7 +468,7 @@
             "b3d4e1ff-090d-443e-a571-d4b522eed959",
             "59fa8786-9c0a-4ac4-a15a-a62dd267d9df",
             "45a4bb52-ab79-4933-a342-ce5858b4d41a",
-            "337792f8-a31a-46de-a022-d9e26ff927a8",
+            "337792f8-a31a-46de-a022-d9e26ff927a8"
           ],
           "SubCategories": null
         },

@@ -14,7 +14,7 @@ namespace BlueprintManager
     public partial class FormDefineEditor : Form
     {
         internal CategoryTreeNode Tree { get; set; }
-        internal Dictionary<string, BlockIdItem> BlockIdList { get; set; }
+        internal Dictionary<string, BlockDefinition> BlockIdList { get; set; }
         internal ClipboardViewer clipboard;
         
         public FormDefineEditor()
@@ -30,7 +30,7 @@ namespace BlueprintManager
             try
             {
 
-                this.BlockIdList = BlockIdStore.LoadIdList();
+                this.BlockIdList = BlockDefinitionStore.LoadBlockDefinitions();
                 this.Tree = CategoryTree.Load(CategoryTree.CATEGORY_TREE_FILE);
                 this.AddSubCategories(this.Tree.SubCategories, 0);
 
@@ -63,6 +63,7 @@ namespace BlueprintManager
 
         private void AddSubCategories(List<CategoryTreeNode> categories, int depths)
         {
+            var errors = new List<string>();
             foreach (var node in categories)
             {
                 var indent = string.Empty.PadLeft(depths * 2);
@@ -71,13 +72,30 @@ namespace BlueprintManager
                 {
                     foreach (var item in node.Items)
                     {
-                        this.BlockIdList[item].Category = node.Name;
+                        if (this.BlockIdList.ContainsKey(item))
+                        {
+                            this.BlockIdList[item].Category = node.Name;
+                        }
+                        else
+                        {
+                            errors.Add(string.Format("{0} {1}", item, node.Name));
+                        }
                     }
                 }
                 if (node.SubCategories != null)
                 {
                     this.AddSubCategories(node.SubCategories, depths + 1);
                 }
+            }
+            if (errors.Any())
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("category error");
+                foreach (var item in errors)
+                {
+                    sb.AppendLine(item);
+                }
+                throw new Exception(sb.ToString());
             }
         }
 
@@ -171,7 +189,7 @@ namespace BlueprintManager
                     var category = row.Cells[6].Value as string;
                     var isSubconstruction = row.Cells[8].Value as string;
 
-                    var item = new BlockIdItem();
+                    var item = new BlockDefinition();
                     item.Uid = uid;
                     item.Name = name;
                     item.Category = category;
@@ -200,7 +218,7 @@ namespace BlueprintManager
 
                 this.FillCategoryItems(this.Tree);
 
-                BlockIdStore.SaveIdList(this.BlockIdList);
+                BlockDefinitionStore.SaveBlockDefinitions(this.BlockIdList);
                 CategoryTree.Save(CategoryTree.CATEGORY_TREE_FILE, this.Tree);
             }
             catch (Exception ex)

@@ -47,6 +47,7 @@
             this.backupToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.blockReplaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blockEraseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.colorPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.histroyListView = new System.Windows.Forms.ListView();
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -78,7 +79,7 @@
             this.restoreToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.defineEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.colorPaletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blueprintEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeContext.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -243,28 +244,35 @@
             this.blockEraseToolStripMenuItem,
             this.colorPaletteToolStripMenuItem});
             this.blueprintFileContext.Name = "blueprintFileContext";
-            this.blueprintFileContext.Size = new System.Drawing.Size(153, 114);
+            this.blueprintFileContext.Size = new System.Drawing.Size(145, 92);
             // 
             // backupToolStripMenuItem1
             // 
             this.backupToolStripMenuItem1.Name = "backupToolStripMenuItem1";
-            this.backupToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.backupToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
             this.backupToolStripMenuItem1.Text = "Backup";
             this.backupToolStripMenuItem1.Click += new System.EventHandler(this.backupToolStripMenuItem1_Click);
             // 
             // blockReplaceToolStripMenuItem
             // 
             this.blockReplaceToolStripMenuItem.Name = "blockReplaceToolStripMenuItem";
-            this.blockReplaceToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blockReplaceToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.blockReplaceToolStripMenuItem.Text = "Block replace";
             this.blockReplaceToolStripMenuItem.Click += new System.EventHandler(this.blockReplaceToolStripMenuItem_Click);
             // 
             // blockEraseToolStripMenuItem
             // 
             this.blockEraseToolStripMenuItem.Name = "blockEraseToolStripMenuItem";
-            this.blockEraseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blockEraseToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.blockEraseToolStripMenuItem.Text = "Block erase";
             this.blockEraseToolStripMenuItem.Click += new System.EventHandler(this.blockEraseToolStripMenuItem_Click);
+            // 
+            // colorPaletteToolStripMenuItem
+            // 
+            this.colorPaletteToolStripMenuItem.Name = "colorPaletteToolStripMenuItem";
+            this.colorPaletteToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.colorPaletteToolStripMenuItem.Text = "Color palette";
+            this.colorPaletteToolStripMenuItem.Click += new System.EventHandler(this.colorPaletteToolStripMenuItem_Click);
             // 
             // histroyListView
             // 
@@ -506,7 +514,8 @@
             // toolToolStripMenuItem
             // 
             this.toolToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.defineEditorToolStripMenuItem});
+            this.defineEditorToolStripMenuItem,
+            this.blueprintEditorToolStripMenuItem});
             this.toolToolStripMenuItem.Name = "toolToolStripMenuItem";
             this.toolToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.toolToolStripMenuItem.Text = "Tool";
@@ -514,16 +523,16 @@
             // defineEditorToolStripMenuItem
             // 
             this.defineEditorToolStripMenuItem.Name = "defineEditorToolStripMenuItem";
-            this.defineEditorToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.defineEditorToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
             this.defineEditorToolStripMenuItem.Text = "Define editor";
             this.defineEditorToolStripMenuItem.Click += new System.EventHandler(this.defineEditorToolStripMenuItem_Click);
             // 
-            // colorPaletteToolStripMenuItem
+            // blueprintEditorToolStripMenuItem
             // 
-            this.colorPaletteToolStripMenuItem.Name = "colorPaletteToolStripMenuItem";
-            this.colorPaletteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.colorPaletteToolStripMenuItem.Text = "Color palette";
-            this.colorPaletteToolStripMenuItem.Click += new System.EventHandler(this.colorPaletteToolStripMenuItem_Click);
+            this.blueprintEditorToolStripMenuItem.Name = "blueprintEditorToolStripMenuItem";
+            this.blueprintEditorToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
+            this.blueprintEditorToolStripMenuItem.Text = "Blueprint Editor";
+            this.blueprintEditorToolStripMenuItem.Click += new System.EventHandler(this.blueprintEditorToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -613,6 +622,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem defineEditorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colorPaletteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blueprintEditorToolStripMenuItem;
     }
 }
 
