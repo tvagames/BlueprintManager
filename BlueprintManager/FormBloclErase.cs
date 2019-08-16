@@ -64,8 +64,7 @@ namespace BlueprintManager
 
                 this.lblName.Text = this.Blueprint.Name;
                 this.FillCondition();
-                this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
-
+                this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
             }
             catch (Exception ex)
             {
@@ -112,7 +111,7 @@ namespace BlueprintManager
                 this.FillCondition();
                 this.Blueprint.EraseBlocks(this.BlockDefinitions, this.TargetCondition);
                 this.Blueprint.LoadBlocks();
-                this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+                this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
                 MessageBox.Show("completed");
             }
@@ -217,7 +216,7 @@ namespace BlueprintManager
             this.lblTargetColor.BackColor = this.Blueprint.Colors[i];
             this.lblTargetColor.Text = i.ToString();
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
@@ -225,7 +224,7 @@ namespace BlueprintManager
         {
             this.cmbColor.Enabled = this.chkColor.Checked;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
@@ -235,7 +234,7 @@ namespace BlueprintManager
             this.txtXTo.Enabled = this.chkX.Checked;
             this.chkXinv.Enabled = this.chkX.Checked;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
@@ -245,7 +244,7 @@ namespace BlueprintManager
             this.txtYTo.Enabled = this.chkY.Checked;
             this.chkYinv.Enabled = this.chkY.Checked;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
 
         }
@@ -256,7 +255,7 @@ namespace BlueprintManager
             this.txtZTo.Enabled = this.chkZ.Checked;
             this.chkZinv.Enabled = this.chkZ.Checked;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
 
         }
@@ -264,84 +263,84 @@ namespace BlueprintManager
         private void cmbGroupFrom_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void cmbBlockFrom_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void chkObjects_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void txtXFrom_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void txtXTo_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void txtYFrom_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void txtYTo_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void txtZFrom_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void txtZTo_TextChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void chkXinv_CheckedChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void chkYinv_CheckedChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
         private void chkZinv_CheckedChanged(object sender, EventArgs e)
         {
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
         }
 
@@ -435,8 +434,13 @@ namespace BlueprintManager
             treeBlocks.ResumeLayout();
             treeCheckLocked = false;
             this.FillCondition();
-            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition);
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
 
+        }
+
+        private void inputZoom_ValueChanged(object sender, EventArgs e)
+        {
+            this.pictureBox1.Image = this.Blueprint.GetBmp(this.BlockDefinitions, this.TargetCondition, this.inputZoom.Value);
         }
     }
 }

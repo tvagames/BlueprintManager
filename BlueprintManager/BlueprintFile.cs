@@ -641,7 +641,7 @@ namespace BlueprintManager
         }
 
         private Bitmap bmp;
-        public Bitmap GetBmp(Dictionary<string, BlockDefinition> definitions, BlockCondition targetCondition)
+        public Bitmap GetBmp(Dictionary<string, BlockDefinition> definitions, BlockCondition targetCondition, decimal zoomRate)
         {
             var allBlocks = this.GetAllBlocks();
             var orderedList = allBlocks.Where(block => {
@@ -649,14 +649,19 @@ namespace BlueprintManager
                 definitions.ContainsKey(this.BlockIdToUidMap[block.id.ToString()]);
 
             }).OrderBy(item => item.position.Y);
-            float zoom = 5;
+            int startOffset = 10;
+            int directionOffset = 20;
+            float zoom = (float)zoomRate;
+            float bmpWidth = ((this.MaxCord[2] - this.MinCord[2]) + (this.MaxCord[0] - this.MinCord[0]) + startOffset * 2 + directionOffset * 2) * zoom;
+            float bmpHeight = ((this.MaxCord[1] - this.MinCord[1]) + (this.MaxCord[0] - this.MinCord[0]) + startOffset * 2 + directionOffset * 2) * zoom;
             float offsetX = this.MinCord[2] * -1;
             float offsetY = this.MaxCord[1] * 1;
-            offsetX += 10;
-            offsetY += 10;
+            offsetX += startOffset;
+            offsetY += startOffset;
+            float topLine = offsetY;
             Color color = Color.FromArgb(32, 128, 128, 128);
             Color originColor = Color.Green;
-            this.bmp = new Bitmap(2000, 2000); ;
+            this.bmp = new Bitmap((int)Math.Ceiling((decimal)bmpWidth), (int)Math.Ceiling((decimal)bmpHeight));
 
             Graphics g = Graphics.FromImage(this.bmp);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
@@ -681,7 +686,7 @@ namespace BlueprintManager
             }
             //this.DrawBeam(zoom, offsetX, offsetY, g, 0, 0, 1, Direction.Top, originColor);
 
-            offsetY += 50;
+            offsetY += directionOffset;
             offsetY += this.MinCord[1] * -1;
             offsetY += this.MaxCord[0] * 1;
 
@@ -700,8 +705,8 @@ namespace BlueprintManager
             }
             //this.DrawBeam(zoom, offsetX, offsetY, g, 0, 0, 1, Direction.Top, originColor);
 
-
-            offsetX += 50;
+            offsetY = topLine;
+            offsetX += directionOffset;
             offsetX += this.MinCord[0] * -1;
             offsetX += this.MaxCord[2] * 1;
             offset = new PointF() { X = offsetX * zoom, Y = offsetY * zoom };
@@ -1153,7 +1158,7 @@ namespace BlueprintManager
                 case Axis.Z:
                     v = block.Vertecis.Select(s => new Vector3()
                     {
-                        X = s.X * zoom,
+                        X = s.X * zoom * -1,
                         Y = s.Y * zoom * -1,
                         Z = s.Z * zoom
                     }).ToArray();
