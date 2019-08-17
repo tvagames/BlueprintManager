@@ -328,6 +328,11 @@ namespace BlueprintManager
                         }
                     }
 
+                    //BlockData
+                    var oldBlockData = jobj["BlockData"];
+                    var oldBlockDataMap = this.ConvertToBlockDataMap(oldBlockData.Value<string>());
+                    var newBlockDataMap = new Dictionary<int, BlockData>();
+
                     var newIndex = 0;
                     for (int i = 0; i < oldBlockIds.Count(); i++)
                     {
@@ -360,6 +365,13 @@ namespace BlueprintManager
                                     newBei.Add(bei.Count);
                                     newBei.AddRange(bei);
                                 }
+
+                                if (oldBlockDataMap.ContainsKey(i))
+                                {
+                                    oldBlockDataMap[i].Id = (uint)newIndex;
+                                    newBlockDataMap.Add(i, oldBlockDataMap[i]);
+                                }
+
                                 newIndex++;
                             }
                             else
@@ -367,6 +379,11 @@ namespace BlueprintManager
                                 if (beiIdMap.ContainsKey(i))
                                 {
                                     beiIdMap.Remove(i);
+                                }
+
+                                if (oldBlockDataMap.ContainsKey(i))
+                                {
+                                    oldBlockDataMap.Remove(i);
                                 }
 
                                 if (i == 0 && items.ContainsKey(uid) && items[uid].IsSubconstruction)
@@ -413,6 +430,15 @@ namespace BlueprintManager
                     {
                         jobj["BEI"] = new JArray(newBei.ToArray());
                     }
+
+                    if (newBlockDataMap.Count == 0)
+                    {
+                        jobj["BlockData"] = null;
+                    }
+                    else
+                    {
+                        jobj["BlockData"] = this.ConvertToBlockDataString(newBlockDataMap);
+                    }
                 }
 
                 if (targetCondition.IsSub)
@@ -446,6 +472,62 @@ namespace BlueprintManager
             }
 
 
+        }
+
+        private string ConvertToBlockDataString(Dictionary<int, BlockData> newBlockDataMap)
+        {
+            var bytes = new List<byte>();
+            foreach (var item in newBlockDataMap.Values)
+            {
+                bytes.Add((byte)(item.Id & 0xFF));
+                bytes.Add((byte)(item.Id & 0xFF00));
+                bytes.Add((byte)(item.Id & 0xFF0000));
+                bytes.Add((byte)(item.HeaderLength & 0xFF));
+                bytes.Add((byte)(item.HeaderLength & 0xFF00));
+                bytes.Add((byte)(item.DataLength & 0xFF));
+                bytes.Add((byte)(item.DataLength & 0xFF00));
+                bytes.Add((byte)(item.SortedLength & 0xFF));
+                bytes.Add((byte)(item.SortedLength & 0xFF00));
+                bytes.AddRange(item.HeaderBytes);
+                bytes.AddRange(item.DataBytes);
+                bytes.AddRange(item.SortedBytes);
+            }
+            return Convert.ToBase64String(bytes.ToArray());
+        }
+
+        private Dictionary<int, BlockData> ConvertToBlockDataMap(string blockDataString)
+        {
+            var blockDataBytes = Convert.FromBase64String(blockDataString);
+            var index = 0u;
+            var ret = new Dictionary<int, BlockData>();
+            while (index < blockDataBytes.Length)
+            {
+                var item = new BlockData();
+                item.Id = blockDataBytes[index++];
+                item.Id += (uint)(blockDataBytes[index++] << 8);
+                item.Id += (uint)(blockDataBytes[index++] << 16);
+
+                item.HeaderLength = blockDataBytes[index++];
+                item.HeaderLength += (uint)(blockDataBytes[index++] << 8);
+
+                item.DataLength = (uint)(blockDataBytes[index++]);
+                item.DataLength += (uint)(blockDataBytes[index++] << 8);
+
+                item.SortedLength = (uint)(blockDataBytes[index++]);
+                item.SortedLength += (uint)(blockDataBytes[index++] << 8);
+
+                item.HeaderBytes = blockDataBytes.Skip((int)index).Take((int)item.HeaderLength).ToArray();
+                index += item.HeaderLength;
+
+                item.DataBytes = blockDataBytes.Skip((int)index).Take((int)item.DataLength).ToArray();
+                index += item.DataLength;
+
+                item.SortedBytes = blockDataBytes.Skip((int)index).Take((int)item.SortedLength).ToArray();
+                index += item.SortedLength;
+
+                ret.Add((int)item.Id, item);
+            }
+            return ret;
         }
 
         internal void ReplaceGroup(BlockCondition targetCondition, BlockAction action)

@@ -56,6 +56,7 @@
     <Compile Include="BackupManager.cs" />
     <Compile Include="BlockAction.cs" />
     <Compile Include="BlockCondition.cs" />
+    <Compile Include="BlockData.cs" />
     <Compile Include="BlockIdList.cs" />
     <Compile Include="BlockInfo.cs" />
     <Compile Include="BlueprintFile.cs" />
